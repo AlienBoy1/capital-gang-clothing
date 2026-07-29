@@ -1,0 +1,51 @@
+{
+  "name": "capital-gang-clothing",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "next": "15.4.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "typescript": "5.6.3",
+    "@prisma/client": "5.22.0",
+    "tailwindcss": "3.4.14",
+    "framer-motion": "11.11.17",
+    "react-hook-form": "7.53.2",
+    "@hookform/resolvers": "3.9.1",
+    "zod": "3.23.8",
+    "zustand": "5.0.1",
+    "@tanstack/react-query": "5.62.7",
+    "@tanstack/react-query-devtools": "5.62.7",
+    "next-pwa": "5.6.0",
+    "lucide-react": "0.462.0",
+    "bcryptjs": "2.4.3",
+    "jose": "5.9.6",
+    "clsx": "2.1.1",
+    "tailwind-merge": "2.5.5",
+    "sharp": "0.33.5",
+    "nanoid": "5.0.9"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "19.0.1",
+    "@types/react-dom": "19.0.2",
+    "@types/bcryptjs": "2.4.6",
+    "prisma": "5.22.0",
+    "tsx": "4.19.2",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.49",
+    "eslint": "9.17.0",
+    "eslint-config-next": "15.4.0"
+  }
+}

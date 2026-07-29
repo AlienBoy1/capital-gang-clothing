@@ -1,0 +1,64 @@
+"use client";
+
+import Image from "next/image";
+import { cn } from "@/shared/lib/cn";
+import { ImageLightbox, useLightbox } from "@/shared/ui/components/ImageLightbox";
+
+export interface GalleryAlbumCardData {
+  id: string;
+  title: string;
+  slug: string;
+  style: string;
+  description?: string | null;
+  coverImage?: string | null;
+  photos: Array<{ id: string; url: string; alt?: string | null; isCover: boolean }>;
+}
+
+export function GalleryAlbumCard({ album, className }: { album: GalleryAlbumCardData; className?: string }) {
+  const cover =
+    album.coverImage ||
+    album.photos.find((photo) => photo.isCover)?.url ||
+    album.photos[0]?.url ||
+    null;
+
+  const lightboxImages =
+    album.photos.length > 0
+      ? album.photos.map((photo) => ({ src: photo.url, alt: photo.alt || album.title }))
+      : cover
+        ? [{ src: cover, alt: album.title }]
+        : [];
+
+  const lightbox = useLightbox(lightboxImages);
+
+  return (
+    <article className={cn("group", className)}>
+      <button
+        type="button"
+        onClick={() => lightboxImages.length && lightbox.show(0)}
+        className="relative block aspect-[3/4] w-full overflow-hidden rounded-2xl border border-line bg-elevated text-left"
+        disabled={!lightboxImages.length}
+      >
+        {cover ? (
+          <Image
+            src={cover}
+            alt={album.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition duration-700 group-hover:scale-[1.04]"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_30%,var(--brand-soft),transparent_50%),linear-gradient(180deg,var(--elevated),var(--surface))]" />
+        )}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 pt-16">
+          <p className="text-[0.65rem] uppercase tracking-[0.22em] text-brand">{album.style}</p>
+          <h2 className="mt-1 font-display text-xl font-semibold text-white">{album.title}</h2>
+          {album.photos.length > 1 && (
+            <p className="mt-1 text-xs text-white/70">{album.photos.length} fotos · tocar para ver</p>
+          )}
+        </div>
+      </button>
+      {album.description && <p className="mt-3 line-clamp-2 text-sm text-muted">{album.description}</p>}
+      <ImageLightbox {...lightbox.props} images={lightboxImages} />
+    </article>
+  );
+}
