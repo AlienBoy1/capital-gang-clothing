@@ -25,12 +25,17 @@ export async function POST(request: Request) {
     : undefined;
 
   try {
-    const user = await useCase.execute({ ...credentials.data, accessCode });
+    const user = await useCase.execute({
+      email: credentials.data.email,
+      password: credentials.data.password || undefined,
+      accessCode,
+    });
 
     const token = await createSessionToken({
       userId: user.id,
       role: user.role,
       isValidated: user.isValidated,
+      mustSetPassword: user.mustSetPassword,
     });
 
     const response = NextResponse.json({ user });

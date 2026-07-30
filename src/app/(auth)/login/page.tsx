@@ -165,8 +165,8 @@ export default function LoginPage() {
             </h2>
             <p className="mt-3 text-sm text-muted">
               {step === "credentials"
-                ? "Entra al panel de Capital Gang Clothing."
-                : "Primer ingreso: introduce el código de acceso (solo esta vez)."}
+                ? "Si es tu primer acceso, escribe tu correo y continúa (puedes dejar la contraseña vacía). Te pediremos el código que te dio el admin."
+                : "Introduce el código de acceso de 6 dígitos (solo esta vez). Después configurarás tu contraseña."}
             </p>
 
             <div className="mt-8 rounded-2xl border border-line bg-surface/90 p-6 shadow-soft backdrop-blur sm:p-8">
@@ -201,7 +201,7 @@ export default function LoginPage() {
                     <input
                       {...credentialsForm.register("password")}
                       type="password"
-                      placeholder="••••••••"
+                      placeholder="Vacía si es tu primer acceso"
                       className="input-field"
                       autoComplete="current-password"
                     />

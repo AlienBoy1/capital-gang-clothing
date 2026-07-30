@@ -1,6 +1,8 @@
-import { ProductCard } from "@/modules/catalog/presentation/components/ProductCard";
+import { Suspense } from "react";
+import { CatalogGrid } from "@/modules/catalog/presentation/components/CatalogGrid";
 import { prisma } from "@/shared/lib/prisma";
 import { serializeProducts } from "@/shared/lib/serialize";
+import { DEFAULT_STOCK_THRESHOLDS } from "@/shared/lib/stock";
 import { FadeInSection } from "@/shared/ui/animations/FadeInSection";
 
 export const metadata = {
@@ -9,14 +11,28 @@ export const metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function TattooShopPage() {
-  const rows = await prisma.product
-    .findMany({
-      where: { storeType: "TATTOO_SHOP", isActive: true },
-      include: { images: { orderBy: { order: "asc" } } },
-      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-    })
+async function getStockThresholds() {
+  const settings = await prisma.appSetting
+    .findMany({ where: { key: { in: ["stockThresholdHigh", "stockThresholdMedium"] } } })
     .catch(() => []);
+  const map = Object.fromEntries(settings.map((s) => [s.key, s.value]));
+  return {
+    high: Number(map.stockThresholdHigh) || DEFAULT_STOCK_THRESHOLDS.high,
+    medium: Number(map.stockThresholdMedium) || DEFAULT_STOCK_THRESHOLDS.medium,
+  };
+}
+
+export default async function TattooShopPage() {
+  const [rows, thresholds] = await Promise.all([
+    prisma.product
+      .findMany({
+        where: { storeType: "TATTOO_SHOP", isActive: true },
+        include: { images: { orderBy: { order: "asc" } } },
+        orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+      })
+      .catch(() => []),
+    getStockThresholds(),
+  ]);
 
   const products = serializeProducts(rows);
 
@@ -38,13 +54,9 @@ export default async function TattooShopPage() {
           <p className="mt-2 text-sm text-muted">Los productos del tattoo shop aparecerán aquí.</p>
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-5 lg:grid-cols-4 lg:gap-6">
-          {products.map((product, index) => (
-            <FadeInSection key={product.id} delay={Math.min(index * 40, 200)}>
-              <ProductCard product={product} hrefBase="/tattoo-shop" />
-            </FadeInSection>
-          ))}
-        </div>
+        <Suspense fallback={<div className="mt-10 skeleton h-64" />}>
+          <CatalogGrid products={products} hrefBase="/tattoo-shop" thresholds={thresholds} />
+        </Suspense>
       )}
     </main>
   );

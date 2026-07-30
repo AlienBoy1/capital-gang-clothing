@@ -10,6 +10,7 @@ const productSchema = z.object({
   description: z.string().min(1),
   basePrice: z.coerce.number().nonnegative(),
   discountPrice: z.coerce.number().nonnegative().nullable().optional(),
+  stock: z.coerce.number().int().nonnegative().optional(),
   isActive: z.boolean().optional(),
   isFeatured: z.boolean().optional(),
   images: z
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
     data: {
       ...data,
       discountPrice: data.discountPrice ?? null,
+      stock: data.stock ?? 0,
       isActive: data.isActive ?? true,
       isFeatured: data.isFeatured ?? false,
       createdById: session.userId,

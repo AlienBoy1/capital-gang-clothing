@@ -34,6 +34,8 @@ export async function GET() {
       role: true,
       isActive: true,
       phone: true,
+      isValidated: true,
+      mustSetPassword: true,
     },
   });
 

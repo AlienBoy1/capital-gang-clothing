@@ -1,6 +1,7 @@
 import { getCurrentSession } from "@/shared/lib/get-current-session";
 import { can } from "@/modules/identity/domain/permissions";
 import { DashboardShell } from "@/modules/identity/presentation/DashboardShell";
+import { SetPasswordGate } from "@/modules/identity/presentation/SetPasswordGate";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getCurrentSession();
@@ -18,5 +19,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .filter((item) => !item.permission || can(role, item.permission))
     .map(({ href, label, icon }) => ({ href, label, icon }));
 
-  return <DashboardShell navItems={navItems}>{children}</DashboardShell>;
+  return (
+    <DashboardShell navItems={navItems}>
+      <SetPasswordGate />
+      {children}
+    </DashboardShell>
+  );
 }

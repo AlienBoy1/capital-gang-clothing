@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { cn } from "@/shared/lib/cn";
-import { ImageLightbox, useLightbox } from "@/shared/ui/components/ImageLightbox";
+import { GalleryAlbumModal } from "@/modules/gallery/presentation/components/GalleryAlbumModal";
 
 export interface GalleryAlbumCardData {
   id: string;
@@ -15,28 +16,19 @@ export interface GalleryAlbumCardData {
 }
 
 export function GalleryAlbumCard({ album, className }: { album: GalleryAlbumCardData; className?: string }) {
+  const [open, setOpen] = useState(false);
   const cover =
     album.coverImage ||
     album.photos.find((photo) => photo.isCover)?.url ||
     album.photos[0]?.url ||
     null;
 
-  const lightboxImages =
-    album.photos.length > 0
-      ? album.photos.map((photo) => ({ src: photo.url, alt: photo.alt || album.title }))
-      : cover
-        ? [{ src: cover, alt: album.title }]
-        : [];
-
-  const lightbox = useLightbox(lightboxImages);
-
   return (
     <article className={cn("group", className)}>
       <button
         type="button"
-        onClick={() => lightboxImages.length && lightbox.show(0)}
+        onClick={() => setOpen(true)}
         className="relative block aspect-[3/4] w-full overflow-hidden rounded-2xl border border-line bg-elevated text-left"
-        disabled={!lightboxImages.length}
       >
         {cover ? (
           <Image
@@ -54,15 +46,14 @@ export function GalleryAlbumCard({ album, className }: { album: GalleryAlbumCard
             {album.style}
           </p>
           <h2 className="mt-1 font-display text-base font-semibold text-white sm:text-xl">{album.title}</h2>
-          {album.photos.length > 1 && (
-            <p className="mt-1 text-[0.65rem] text-white/70 sm:text-xs">
-              {album.photos.length} fotos · tocar para ver
-            </p>
-          )}
+          <p className="mt-1 text-[0.65rem] text-white/70 sm:text-xs">
+            {album.photos.length > 0 ? `${album.photos.length} fotos · ` : ""}
+            tocar para ver
+          </p>
         </div>
       </button>
       {album.description && <p className="mt-3 line-clamp-2 text-sm text-muted">{album.description}</p>}
-      <ImageLightbox {...lightbox.props} images={lightboxImages} />
+      <GalleryAlbumModal album={open ? album : null} onClose={() => setOpen(false)} />
     </article>
   );
 }

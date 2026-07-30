@@ -15,6 +15,16 @@ function formatPrice(value: number) {
   }).format(value);
 }
 
+const emptyForm = {
+  name: "",
+  phone: "",
+  country: "Mexico",
+  state: "",
+  municipality: "",
+  address: "",
+  note: "",
+};
+
 export default function CarritoPage() {
   const items = useCartStore((state) => state.items);
   const setQuantity = useCartStore((state) => state.setQuantity);
@@ -22,31 +32,77 @@ export default function CarritoPage() {
   const clear = useCartStore((state) => state.clear);
   const subtotal = useCartStore((state) => state.subtotal);
   const [ready, setReady] = useState(false);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [note, setNote] = useState("");
+  const [form, setForm] = useState(emptyForm);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => setReady(true), []);
 
-  function checkoutWhatsApp() {
-    const lines = items.map(
-      (item) => `• ${item.name} x${item.quantity} — ${formatPrice(item.price * item.quantity)}`
-    );
-    const message = [
-      "Hola Capital Gang, quiero hacer este pedido:",
-      "",
-      ...lines,
-      "",
-      `Subtotal: ${formatPrice(subtotal())}`,
-      name ? `Nombre: ${name}` : null,
-      phone ? `Teléfono: ${phone}` : null,
-      note ? `Notas: ${note}` : null,
-    ]
-      .filter(Boolean)
-      .join("\n");
+  async function checkoutWhatsApp() {
+    setError(null);
+    if (!form.name.trim() || !form.phone.trim()) {
+      setError("Nombre y WhatsApp son obligatorios.");
+      return;
+    }
+    if (!form.country.trim() || !form.state.trim() || !form.municipality.trim() || !form.address.trim()) {
+      setError("Completa país, estado, municipio y calle y número.");
+      return;
+    }
 
-    const url = `https://wa.me/525500000000?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: form.name.trim(),
+          customerPhone: form.phone.trim(),
+          country: form.country.trim(),
+          state: form.state.trim(),
+          municipality: form.municipality.trim(),
+          address: form.address.trim(),
+          comments: form.note.trim() || null,
+          items: items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            unitPrice: item.price,
+          })),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.message ?? "No se pudo crear la orden");
+        return;
+      }
+
+      const lines = items.map(
+        (item) => `• ${item.name} x${item.quantity} — ${formatPrice(item.price * item.quantity)}`
+      );
+      const message = [
+        `Hola Capital Gang, quiero hacer este pedido (${data.order.code}):`,
+        "",
+        ...lines,
+        "",
+        `Subtotal: ${formatPrice(subtotal())}`,
+        "",
+        `Nombre: ${form.name}`,
+        `WhatsApp: ${form.phone}`,
+        `País: ${form.country}`,
+        `Estado: ${form.state}`,
+        `Municipio: ${form.municipality}`,
+        `Calle y número: ${form.address}`,
+        form.note ? `Notas: ${form.note}` : null,
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+      const url = `https://wa.me/${data.whatsapp}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+      clear();
+      setForm(emptyForm);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (!ready) {
@@ -62,7 +118,8 @@ export default function CarritoPage() {
       <p className="section-label">Carrito</p>
       <h1 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-5xl">Tu pedido</h1>
       <p className="mt-3 max-w-xl text-muted">
-        Revisa tus piezas y envía el pedido por WhatsApp. Confirmamos stock y envío contigo.
+        Revisa tus piezas, completa tus datos y envía el pedido por WhatsApp. Se genera la orden
+        automáticamente para el equipo.
       </p>
 
       {items.length === 0 ? (
@@ -135,40 +192,81 @@ export default function CarritoPage() {
                 </div>
               </div>
             ))}
-            <button type="button" onClick={clear} className="text-sm text-muted underline-offset-2 hover:text-fg hover:underline">
+            <button
+              type="button"
+              onClick={clear}
+              className="text-sm text-muted underline-offset-2 hover:text-fg hover:underline"
+            >
               Vaciar carrito
             </button>
           </div>
 
-          <aside className="panel h-fit space-y-4 lg:sticky lg:top-24">
+          <aside className="panel h-fit space-y-3 lg:sticky lg:top-24">
             <h2 className="font-display text-xl font-semibold">Checkout</h2>
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted">Subtotal</span>
               <span className="font-semibold text-fg">{formatPrice(subtotal())}</span>
             </div>
             <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Tu nombre"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="Tu nombre *"
               className="input-field"
+              required
             />
             <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="WhatsApp"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              placeholder="WhatsApp *"
               className="input-field"
+              required
+            />
+            <input
+              value={form.country}
+              onChange={(e) => setForm({ ...form, country: e.target.value })}
+              placeholder="País *"
+              className="input-field"
+              required
+            />
+            <input
+              value={form.state}
+              onChange={(e) => setForm({ ...form, state: e.target.value })}
+              placeholder="Estado *"
+              className="input-field"
+              required
+            />
+            <input
+              value={form.municipality}
+              onChange={(e) => setForm({ ...form, municipality: e.target.value })}
+              placeholder="Municipio *"
+              className="input-field"
+              required
+            />
+            <input
+              value={form.address}
+              onChange={(e) => setForm({ ...form, address: e.target.value })}
+              placeholder="Calle y número *"
+              className="input-field"
+              required
             />
             <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Notas (talla, color, dirección…)"
+              value={form.note}
+              onChange={(e) => setForm({ ...form, note: e.target.value })}
+              placeholder="Notas (talla, color, referencias…)"
               className="input-field min-h-24"
             />
-            <Button type="button" className="w-full" size="lg" onClick={checkoutWhatsApp}>
+            {error && <p className="text-xs text-danger">{error}</p>}
+            <Button
+              type="button"
+              className="w-full"
+              size="lg"
+              isLoading={submitting}
+              onClick={checkoutWhatsApp}
+            >
               Pedir por WhatsApp
             </Button>
             <p className="text-xs text-subtle">
-              No pagas aquí. Te confirmamos disponibilidad y envío por mensaje.
+              Al enviar se crea la orden en el panel y se abre WhatsApp con el detalle.
             </p>
           </aside>
         </div>

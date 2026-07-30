@@ -22,6 +22,7 @@ export function serializeProduct<T extends Record<string, unknown>>(product: T) 
       product.discountPrice == null ? null : toPlainNumber(product.discountPrice),
     isActive: Boolean(product.isActive),
     isFeatured: Boolean(product.isFeatured),
+    stock: typeof product.stock === "number" ? product.stock : Number(product.stock ?? 0),
     images: images.map((image) => {
       const item = image as Record<string, unknown>;
       return {

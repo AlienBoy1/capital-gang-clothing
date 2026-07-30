@@ -4,14 +4,10 @@ import type { Prisma } from "@prisma/client";
 
 type PrismaUser = Prisma.UserGetPayload<{}>;
 
-/**
- * Repository interface lives with the implementation in this small project,
- * but is imported by the application layer as a type-only contract —
- * the use-case never imports Prisma directly, keeping it swappable/testable.
- */
 export interface UserRepository {
   findByEmail(email: string): Promise<PrismaUser | null>;
   markValidatedAndClearAccessCode(userId: string): Promise<void>;
+  setPassword(userId: string, passwordHash: string): Promise<void>;
   toPublicProfile(user: PrismaUser): UserEntity;
 }
 
@@ -27,6 +23,13 @@ export class PrismaUserRepository implements UserRepository {
     });
   }
 
+  async setPassword(userId: string, passwordHash: string) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash, mustSetPassword: false },
+    });
+  }
+
   toPublicProfile(user: PrismaUser): UserEntity {
     return {
       id: user.id,
@@ -36,6 +39,7 @@ export class PrismaUserRepository implements UserRepository {
       email: user.email,
       role: user.role,
       isValidated: user.isValidated,
+      mustSetPassword: user.mustSetPassword,
       isActive: user.isActive,
       avatarUrl: user.avatarUrl,
       locale: user.locale,

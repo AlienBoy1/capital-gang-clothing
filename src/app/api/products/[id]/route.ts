@@ -10,6 +10,7 @@ const productSchema = z.object({
   description: z.string().min(1).optional(),
   basePrice: z.coerce.number().nonnegative().optional(),
   discountPrice: z.coerce.number().nonnegative().nullable().optional(),
+  stock: z.coerce.number().int().nonnegative().optional(),
   isActive: z.boolean().optional(),
   isFeatured: z.boolean().optional(),
   images: z

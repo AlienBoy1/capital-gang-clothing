@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { randomUUID } from "crypto";
 import { customAlphabet } from "nanoid";
 import { prisma } from "@/shared/lib/prisma";
 import { assertCan } from "../domain/permissions";
@@ -18,30 +19,24 @@ interface CreateUserInput {
 
 interface CreateUserResult {
   userId: string;
-  /** Plaintext, shown ONCE to the creator so they can hand it to the new
-   *  user out-of-band (WhatsApp/in person). Never stored in plaintext,
-   *  never retrievable again after this call returns. */
+  /** Plaintext, shown ONCE to the creator so they can hand it to the new user. */
   accessCode: string;
-  /** Plaintext temporary password, same one-time-visibility rule applies. */
-  temporaryPassword: string;
 }
 
 /**
- * Only ADMIN can create USER or ADMIN accounts (users.create / admins.create
- * per the permissions matrix). USER role has no path to this use-case at all
- * in the UI, and this server-side check is what actually enforces it —
- * the UI hiding the button is just a courtesy, not the security boundary.
+ * Creates a user without a usable password. The access code is the first-login
+ * key; afterwards the user must set their own password on the dashboard.
  */
 export class CreateUserUseCase {
   async execute(input: CreateUserInput): Promise<CreateUserResult> {
     assertCan(input.actorRole, input.role === "ADMIN" ? "admins.create" : "users.create");
 
     const accessCode = generateNumericCode();
-    const temporaryPassword = generateNumericCode() + generateNumericCode();
+    const placeholderPassword = `pending-${randomUUID()}-${Date.now()}`;
 
     const [accessCodeHash, passwordHash] = await Promise.all([
       bcrypt.hash(accessCode, 10),
-      bcrypt.hash(temporaryPassword, 10),
+      bcrypt.hash(placeholderPassword, 10),
     ]);
 
     const user = await prisma.user.create({
@@ -54,6 +49,7 @@ export class CreateUserUseCase {
         accessCode: accessCodeHash,
         passwordHash,
         isValidated: false,
+        mustSetPassword: true,
         createdById: input.actorId,
       },
     });
@@ -68,6 +64,6 @@ export class CreateUserUseCase {
       },
     });
 
-    return { userId: user.id, accessCode, temporaryPassword };
+    return { userId: user.id, accessCode };
   }
 }

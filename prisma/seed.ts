@@ -16,6 +16,7 @@ async function main() {
       passwordHash,
       isValidated: true,
       accessCode: null,
+      mustSetPassword: false,
       isActive: true,
     },
     create: {
@@ -27,6 +28,7 @@ async function main() {
       passwordHash,
       isValidated: true,
       accessCode: null,
+      mustSetPassword: false,
       isActive: true,
     },
   });

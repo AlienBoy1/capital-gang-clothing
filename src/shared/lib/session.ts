@@ -7,6 +7,7 @@ export interface SessionPayload {
   userId: string;
   role: Role;
   isValidated: boolean;
+  mustSetPassword: boolean;
 }
 
 export async function createSessionToken(payload: SessionPayload): Promise<string> {

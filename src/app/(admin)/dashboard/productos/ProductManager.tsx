@@ -21,6 +21,7 @@ interface ProductItem {
   description: string;
   basePrice: number | string;
   discountPrice?: number | string | null;
+  stock?: number;
   storeType: "CLOTHING" | "TATTOO_SHOP";
   isActive: boolean;
   isFeatured: boolean;
@@ -39,6 +40,7 @@ const emptyForm = {
   description: "",
   basePrice: "",
   discountPrice: "",
+  stock: "0",
   isActive: true,
   isFeatured: false,
 };
@@ -97,6 +99,7 @@ export function ProductManager({ storeType = "ALL", title }: ProductManagerProps
       description: product.description,
       basePrice: String(product.basePrice),
       discountPrice: product.discountPrice != null ? String(product.discountPrice) : "",
+      stock: String(product.stock ?? 0),
       isActive: product.isActive,
       isFeatured: product.isFeatured,
     });
@@ -115,6 +118,7 @@ export function ProductManager({ storeType = "ALL", title }: ProductManagerProps
       storeType: lockedType ?? form.storeType,
       basePrice: Number(form.basePrice),
       discountPrice: form.discountPrice ? Number(form.discountPrice) : null,
+      stock: Number(form.stock || 0),
       images: images.map((url, index) => ({
         url,
         alt: form.name,
@@ -240,6 +244,16 @@ export function ProductManager({ storeType = "ALL", title }: ProductManagerProps
             placeholder="Precio oferta (opcional)"
             className="input-field"
           />
+          <input
+            type="number"
+            min="0"
+            step="1"
+            value={form.stock}
+            onChange={(e) => setForm({ ...form, stock: e.target.value })}
+            placeholder="Stock"
+            required
+            className="input-field"
+          />
           <label className="flex items-center gap-2 text-sm text-muted">
             <input
               type="checkbox"
@@ -338,6 +352,9 @@ export function ProductManager({ storeType = "ALL", title }: ProductManagerProps
                     <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-subtle">
                       <span className="rounded-full bg-elevated px-2 py-1 text-fg">
                         ${Number(product.basePrice).toLocaleString("es-MX")}
+                      </span>
+                      <span className="rounded-full bg-elevated px-2 py-1 text-fg">
+                        Stock: {product.stock ?? 0}
                       </span>
                       <span>{product.images?.length ?? 0} img</span>
                       {product.isFeatured && <span className="text-brand">Destacado</span>}

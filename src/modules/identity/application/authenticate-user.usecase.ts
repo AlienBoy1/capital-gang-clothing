@@ -9,21 +9,17 @@ export class InactiveAccountError extends Error {}
 
 interface AuthenticateInput {
   email: string;
-  password: string;
+  /** Optional on first login (access-code flow). Required afterwards. */
+  password?: string;
   /** Only required (and only checked) on the user's very first login. */
   accessCode?: string;
 }
 
 /**
- * Encapsulates the full login flow, including the one-time access-code
- * gate described in the product spec:
- *
- *  1. Verify email + password.
- *  2. If the account has never been validated, an accessCode is
- *     mandatory and must match the one assigned at creation time.
- *  3. On a successful match, the account is permanently marked as
- *     validated and the access code is cleared — it can never be used
- *     again and will never be asked for again.
+ * Login flow:
+ *  1. First-time users: email + access code (password ignored).
+ *  2. Returning users: email + password.
+ * After access-code validation, mustSetPassword stays true until they set one.
  */
 export class AuthenticateUserUseCase {
   constructor(private readonly userRepository: UserRepository) {}
@@ -34,12 +30,8 @@ export class AuthenticateUserUseCase {
 
     if (!user.isActive) throw new InactiveAccountError();
 
-    const passwordMatches = await bcrypt.compare(input.password, user.passwordHash);
-    if (!passwordMatches) throw new InvalidCredentialsError();
-
     if (requiresAccessCodeValidation(user)) {
       if (!input.accessCode) {
-        // Signal the UI to render the access-code step before granting a session.
         throw new AccessCodeRequiredError();
       }
 
@@ -50,7 +42,17 @@ export class AuthenticateUserUseCase {
       if (!codeMatches) throw new InvalidAccessCodeError();
 
       await this.userRepository.markValidatedAndClearAccessCode(user.id);
+      return this.userRepository.toPublicProfile({
+        ...user,
+        isValidated: true,
+        accessCode: null,
+      });
     }
+
+    if (!input.password) throw new InvalidCredentialsError();
+
+    const passwordMatches = await bcrypt.compare(input.password, user.passwordHash);
+    if (!passwordMatches) throw new InvalidCredentialsError();
 
     return this.userRepository.toPublicProfile(user);
   }
