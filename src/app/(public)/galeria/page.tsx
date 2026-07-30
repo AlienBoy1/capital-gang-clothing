@@ -6,6 +6,8 @@ export const metadata = {
   title: "Galería",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function GaleriaPage() {
   const albums = await prisma.galleryAlbum
     .findMany({

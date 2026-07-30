@@ -7,6 +7,8 @@ export const metadata = {
   title: "Tattoo Shop",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function TattooShopPage() {
   const rows = await prisma.product
     .findMany({
