@@ -1,4 +1,4 @@
-/** Curated Unsplash references — street fashion, urban art, tattoo culture. */
+/** Local + curated assets — street fashion, urban art, tattoo culture. */
 export const LANDING_IMAGES = {
   hero: {
     src: "/landing/hero-urban.jpg",
@@ -6,7 +6,7 @@ export const LANDING_IMAGES = {
   },
   lookbook: [
     {
-      src: "https://images.unsplash.com/photo-1523398002811-999ca8dec937?auto=format&fit=crop&w=1200&q=80",
+      src: "/landing/lookbook-streetwear.jpg",
       alt: "Streetwear con actitud",
     },
     {
@@ -18,7 +18,7 @@ export const LANDING_IMAGES = {
       alt: "Tinta y detalle de tatuaje",
     },
     {
-      src: "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?auto=format&fit=crop&w=1200&q=80",
+      src: "/landing/lookbook-mural.jpg",
       alt: "Arte urbano y muralismo",
     },
   ],

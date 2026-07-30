@@ -49,14 +49,14 @@ export function LandingContent() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4 md:gap-4">
           {LANDING_IMAGES.lookbook.map((image, index) => (
             <button
               key={image.src}
               type="button"
               onClick={() => lookbook.show(index)}
-              className={`group relative overflow-hidden rounded-2xl border border-line bg-elevated ${
-                index === 0 || index === 3 ? "aspect-[3/4]" : "aspect-square md:aspect-[3/4]"
+              className={`group relative overflow-hidden rounded-xl border border-line bg-elevated sm:rounded-2xl ${
+                index % 2 === 0 ? "aspect-[3/4]" : "aspect-[4/5] sm:aspect-[3/4]"
               }`}
             >
               <Image
@@ -66,7 +66,7 @@ export function LandingContent() {
                 sizes="(max-width: 768px) 50vw, 25vw"
                 className="object-cover transition duration-700 group-hover:scale-[1.05]"
               />
-              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 text-left text-xs text-white opacity-0 transition group-hover:opacity-100">
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-2.5 text-left text-[0.65rem] text-white sm:p-3 sm:text-xs sm:opacity-0 sm:transition sm:group-hover:opacity-100">
                 {image.alt}
               </span>
             </button>
@@ -113,12 +113,12 @@ export function LandingContent() {
           </h2>
         </FadeInSection>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
           {worlds.map((world, index) => (
             <FadeInSection key={world.href} delay={index * 70}>
               <Link
                 href={world.href}
-                className="group relative block aspect-[4/5] overflow-hidden rounded-2xl border border-line"
+                className="group relative block aspect-[5/4] overflow-hidden rounded-xl border border-line sm:rounded-2xl md:aspect-[4/5]"
               >
                 <Image
                   src={world.image.src}

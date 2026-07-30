@@ -5,6 +5,7 @@ const links = [
   { href: "/tienda", label: "Tienda" },
   { href: "/tattoo-shop", label: "Tattoo Shop" },
   { href: "/galeria", label: "Galería" },
+  { href: "/carrito", label: "Carrito" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/contacto", label: "Contacto" },
 ];

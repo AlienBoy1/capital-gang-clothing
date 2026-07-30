@@ -49,11 +49,15 @@ export function GalleryAlbumCard({ album, className }: { album: GalleryAlbumCard
         ) : (
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_30%,var(--brand-soft),transparent_50%),linear-gradient(180deg,var(--elevated),var(--surface))]" />
         )}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 pt-16">
-          <p className="text-[0.65rem] uppercase tracking-[0.22em] text-brand">{album.style}</p>
-          <h2 className="mt-1 font-display text-xl font-semibold text-white">{album.title}</h2>
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent p-3 pt-12 sm:p-4 sm:pt-16">
+          <p className="text-[0.55rem] uppercase tracking-[0.18em] text-brand sm:text-[0.65rem] sm:tracking-[0.22em]">
+            {album.style}
+          </p>
+          <h2 className="mt-1 font-display text-base font-semibold text-white sm:text-xl">{album.title}</h2>
           {album.photos.length > 1 && (
-            <p className="mt-1 text-xs text-white/70">{album.photos.length} fotos · tocar para ver</p>
+            <p className="mt-1 text-[0.65rem] text-white/70 sm:text-xs">
+              {album.photos.length} fotos · tocar para ver
+            </p>
           )}
         </div>
       </button>
