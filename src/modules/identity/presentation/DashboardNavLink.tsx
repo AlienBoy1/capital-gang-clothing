@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Settings,
   Shirt,
+  Sparkles,
   Syringe,
   Users,
   type LucideIcon,
@@ -23,6 +24,7 @@ interface DashboardNavLinkProps {
 
 const iconMap: Record<string, LucideIcon> = {
   LayoutDashboard,
+  Sparkles,
   Shirt,
   Syringe,
   Images,

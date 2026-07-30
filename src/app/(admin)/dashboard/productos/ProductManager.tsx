@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Pencil, Trash2, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Pencil, Sparkles, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ImageUploader } from "@/shared/ui/components/ImageUploader";
 import { ImageLightbox } from "@/shared/ui/components/ImageLightbox";
@@ -12,6 +13,7 @@ interface ProductImage {
   url: string;
   alt?: string | null;
   isCover?: boolean;
+  assetVersionId?: string | null;
 }
 
 interface ProductItem {
@@ -56,8 +58,15 @@ function slugify(value: string) {
 
 export function ProductManager({ storeType = "ALL", title }: ProductManagerProps) {
   const lockedType = storeType === "ALL" ? null : storeType;
+  const searchParams = useSearchParams();
+  const publishSessionId = searchParams.get("publishSession");
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [images, setImages] = useState<string[]>([]);
+  const [studioImageMeta, setStudioImageMeta] = useState<
+    Array<{ url: string; assetVersionId: string; alt?: string }>
+  >([]);
+  const [activePublishSession, setActivePublishSession] = useState<string | null>(null);
+  const [studioBanner, setStudioBanner] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -83,10 +92,46 @@ export function ProductManager({ storeType = "ALL", title }: ProductManagerProps
     loadProducts();
   }, [loadProducts]);
 
+  useEffect(() => {
+    if (!publishSessionId) return;
+    let cancelled = false;
+
+    async function injectFromStudio() {
+      const res = await fetch(`/api/ai-studio/publish-sessions/${publishSessionId}`);
+      if (!res.ok || cancelled) return;
+      const data = await res.json();
+      const assets = (data.assets ?? []) as Array<{
+        url: string;
+        assetVersionId: string;
+        alt?: string;
+      }>;
+      if (!assets.length || cancelled) return;
+
+      setActivePublishSession(publishSessionId);
+      setStudioImageMeta(assets);
+      setImages(assets.map((asset) => asset.url));
+      setEditingId(null);
+      setForm({ ...emptyForm, storeType: lockedType ?? data.session?.storeType ?? "CLOTHING" });
+      setStudioBanner(
+        `Imágenes precargadas desde AI Studio (${assets.length}). Completa los datos comerciales y guarda — no se volverán a subir.`
+      );
+      setError(null);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    injectFromStudio();
+    return () => {
+      cancelled = true;
+    };
+  }, [publishSessionId, lockedType]);
+
   function resetForm() {
     setEditingId(null);
     setForm({ ...emptyForm, storeType: lockedType ?? "CLOTHING" });
     setImages([]);
+    setStudioImageMeta([]);
+    setActivePublishSession(null);
+    setStudioBanner(null);
     setError(null);
   }
 
@@ -119,11 +164,16 @@ export function ProductManager({ storeType = "ALL", title }: ProductManagerProps
       basePrice: Number(form.basePrice),
       discountPrice: form.discountPrice ? Number(form.discountPrice) : null,
       stock: Number(form.stock || 0),
-      images: images.map((url, index) => ({
-        url,
-        alt: form.name,
-        isCover: index === 0,
-      })),
+      publishSessionId: !editingId ? activePublishSession : null,
+      images: images.map((url, index) => {
+        const meta = studioImageMeta.find((item) => item.url === url);
+        return {
+          url,
+          alt: meta?.alt || form.name,
+          isCover: index === 0,
+          assetVersionId: meta?.assetVersionId ?? null,
+        };
+      }),
     };
 
     const res = await fetch(editingId ? `/api/products/${editingId}` : "/api/products", {
@@ -142,6 +192,17 @@ export function ProductManager({ storeType = "ALL", title }: ProductManagerProps
     resetForm();
     setSaving(false);
     loadProducts();
+
+    if (publishSessionId && typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("publishSession");
+      window.history.replaceState({}, "", url.pathname + url.search);
+    }
+  }
+
+  function handleImagesChange(urls: string[]) {
+    setImages(urls);
+    setStudioImageMeta((prev) => prev.filter((item) => urls.includes(item.url)));
   }
 
   async function handleDelete(id: string) {
@@ -173,19 +234,29 @@ export function ProductManager({ storeType = "ALL", title }: ProductManagerProps
         </div>
       )}
 
+      {studioBanner && (
+        <div className="flex gap-3 rounded-2xl border border-brand/40 bg-brand-soft/40 px-4 py-3 text-sm text-fg">
+          <Sparkles className="mt-0.5 shrink-0 text-brand" size={18} />
+          <div className="min-w-0">
+            <p className="font-medium text-brand">Publicar desde AI Product Studio</p>
+            <p className="mt-1 text-muted">{studioBanner}</p>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="panel space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm font-medium text-fg">
-            {editingId ? "Editando producto" : "Nuevo producto"}
+            {editingId ? "Editando producto" : activePublishSession ? "Nuevo producto (desde AI Studio)" : "Nuevo producto"}
           </p>
-          {editingId && (
+          {(editingId || activePublishSession) && (
             <button
               type="button"
               onClick={resetForm}
               className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs text-muted transition hover:text-fg"
             >
               <X size={14} />
-              Cancelar edición
+              {editingId ? "Cancelar edición" : "Descartar sesión"}
             </button>
           )}
         </div>
@@ -280,7 +351,15 @@ export function ProductManager({ storeType = "ALL", title }: ProductManagerProps
           className="input-field min-h-28"
         />
 
-        <ImageUploader value={images} onChange={setImages} label="Imágenes del producto" />
+        <ImageUploader
+          value={images}
+          onChange={handleImagesChange}
+          label={
+            activePublishSession
+              ? "Imágenes del producto (referencias AI Studio)"
+              : "Imágenes del producto"
+          }
+        />
 
         {error && <p className="text-sm text-danger">{error}</p>}
 

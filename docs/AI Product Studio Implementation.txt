@@ -1,0 +1,1056 @@
+Quiero implementar un nuevo módulo completamente independiente llamado "AI Product Studio".
+
+IMPORTANTE:
+
+Este módulo NO debe depender del CRUD de productos existente.
+
+Su función será generar, administrar, organizar y preparar Assets mediante IA.
+
+Los productos seguirán existiendo en su propio módulo.
+
+AI Product Studio solamente preparará contenido listo para publicarse.
+
+==========================================================
+NUEVA FILOSOFÍA DEL SISTEMA
+==========================================================
+
+Quiero que la aplicación tenga una arquitectura similar a un DAM (Digital Asset Manager).
+
+El flujo ya NO será:
+
+Registrar Producto
+↓
+Subir Imágenes
+
+Ahora será:
+
+AI Product Studio
+↓
+Crear Proyecto
+↓
+Subir Fotografías
+↓
+Procesamiento mediante IA
+↓
+Generación de Assets
+↓
+Versionado automático
+↓
+Organización y Selección
+↓
+Publicar al Catálogo
+↓
+Completar información comercial
+↓
+Producto publicado
+
+Nunca volveré a subir las mismas imágenes dos veces.
+
+==========================================================
+NUEVO MÓDULO
+==========================================================
+
+Crear un módulo completamente independiente llamado:
+
+AI Product Studio
+
+Agregarlo al menú lateral.
+
+Debe tener su propio CRUD.
+
+==========================================================
+CONCEPTO
+==========================================================
+
+El módulo debe funcionar como un estudio creativo profesional.
+
+No administra productos.
+
+Administra Assets.
+
+Cada proyecto representa una sesión creativa.
+
+Cada proyecto contendrá:
+
+- id
+- nombre
+- descripción
+- estado
+- fecha
+- fotografías originales
+- assets procesados
+- mockups
+- renders
+- modelos IA
+- modelos 3D
+- historial de versiones
+- publicaciones
+
+==========================================================
+FLUJO
+==========================================================
+
+1. Crear Proyecto
+
+↓
+
+2. Subir una o varias fotografías
+
+↓
+
+3. Procesamiento IA
+
+↓
+
+4. Generar automáticamente:
+
+• Fondo eliminado
+
+• Fondo blanco
+
+• Fondo oscuro
+
+• PNG
+
+• WEBP
+
+• JPG
+
+• Miniaturas
+
+• Mockups
+
+• Try-On
+
+• Renders
+
+• Preview 3D
+
+↓
+
+5. Cada resultado generado deberá convertirse automáticamente en una nueva versión del Asset correspondiente.
+
+↓
+
+6. Guardar todos los Assets.
+
+↓
+
+7. Mostrar una galería profesional.
+
+↓
+
+8. Seleccionar uno o varios Assets.
+
+↓
+
+9. Botón:
+
+PUBLICAR AL CATÁLOGO
+
+==========================================================
+VERSIONADO DE ASSETS
+==========================================================
+
+Implementar un sistema completo de Versionado.
+
+NUNCA sobrescribir un Asset existente.
+
+Cada vez que una IA procese una imagen deberá crear una nueva versión.
+
+Ejemplo:
+
+Versión 1
+
+Fotografía original
+
+↓
+
+Versión 2
+
+Fondo eliminado
+
+↓
+
+Versión 3
+
+Corrección de iluminación
+
+↓
+
+Versión 4
+
+Fondo blanco
+
+↓
+
+Versión 5
+
+Marca de agua
+
+↓
+
+Versión 6
+
+Mockup Street
+
+↓
+
+Versión 7
+
+Try-On Hombre
+
+↓
+
+Versión 8
+
+Try-On Mujer
+
+↓
+
+Versión 9
+
+Modelo 3D
+
+Cada versión conservará su historial.
+
+Cada versión podrá:
+
+• visualizarse
+
+• descargarse
+
+• compararse
+
+• restaurarse
+
+• duplicarse
+
+• publicarse
+
+• eliminarse (excepto la original)
+
+La versión original nunca podrá eliminarse mientras el proyecto exista.
+
+Debe existir un Timeline visual de versiones similar al historial de versiones de Figma o Adobe.
+
+==========================================================
+PUBLICAR AL CATÁLOGO
+==========================================================
+
+Este reemplaza completamente al botón "Crear Producto".
+
+Cuando el usuario presione:
+
+PUBLICAR AL CATÁLOGO
+
+NO debe crear inmediatamente un producto.
+
+Debe ocurrir el siguiente flujo.
+
+1.
+
+Crear una sesión temporal.
+
+2.
+
+Guardar los IDs de todas las versiones seleccionadas.
+
+3.
+
+Abrir automáticamente el módulo Productos.
+
+4.
+
+Abrir el formulario:
+
+Nuevo Producto.
+
+5.
+
+El formulario debe detectar automáticamente la sesión.
+
+6.
+
+Precargar todas las imágenes seleccionadas.
+
+7.
+
+Mostrar exactamente igual que si el usuario las hubiera subido manualmente.
+
+8.
+
+El usuario únicamente deberá llenar:
+
+Nombre
+
+Descripción
+
+Precio
+
+Categoría
+
+Subcategoría
+
+Marca
+
+Stock
+
+SKU
+
+Tallas
+
+Colores
+
+Etiquetas
+
+Estado
+
+Colección
+
+Producto Destacado
+
+SEO
+
+Slug
+
+etc.
+
+Cuando presione Guardar:
+
+NO copiar imágenes.
+
+NO volver a subir archivos.
+
+Solo crear relaciones entre el Producto y los Assets seleccionados.
+
+==========================================================
+PUBLICACIONES
+==========================================================
+
+Implementar el concepto de Publicaciones.
+
+Crear una nueva entidad.
+
+CatalogPublication
+
+Cada publicación contendrá:
+
+- id
+- project_id
+- product_id
+- published_at
+- published_by
+- status
+- assets[]
+- versiones_publicadas[]
+
+Un mismo proyecto podrá publicarse múltiples veces.
+
+Cada publicación conservará exactamente qué versiones fueron utilizadas.
+
+==========================================================
+ESTADOS DE LOS ASSETS
+==========================================================
+
+Cada Asset tendrá un estado.
+
+DRAFT
+
+PROCESSING
+
+READY
+
+PUBLISHED
+
+ARCHIVED
+
+ERROR
+
+Solo los Assets READY podrán publicarse.
+
+==========================================================
+TIPOS DE ASSETS
+==========================================================
+
+ORIGINAL
+
+BACKGROUND_REMOVED
+
+WHITE_BACKGROUND
+
+BLACK_BACKGROUND
+
+PNG
+
+WEBP
+
+JPG
+
+MOCKUP
+
+STREET
+
+FLATLAY
+
+TRYON_MAN
+
+TRYON_WOMAN
+
+DETAIL
+
+THUMBNAIL
+
+3D_PREVIEW
+
+GLB
+
+==========================================================
+BASE DE DATOS
+==========================================================
+
+Crear las tablas:
+
+ai_projects
+
+id
+
+name
+
+description
+
+status
+
+created_at
+
+updated_at
+
+--------------------------------
+
+ai_assets
+
+id
+
+project_id
+
+asset_type
+
+current_version_id
+
+status
+
+favorite
+
+created_at
+
+updated_at
+
+--------------------------------
+
+ai_asset_versions
+
+id
+
+asset_id
+
+version_number
+
+parent_version_id
+
+processing_type
+
+storage_path
+
+mime
+
+width
+
+height
+
+size
+
+checksum
+
+created_by
+
+created_at
+
+is_current
+
+notes
+
+--------------------------------
+
+catalog_publications
+
+id
+
+project_id
+
+product_id
+
+published_at
+
+published_by
+
+status
+
+--------------------------------
+
+catalog_publication_assets
+
+id
+
+publication_id
+
+asset_version_id
+
+--------------------------------
+
+product_images
+
+id
+
+product_id
+
+asset_version_id
+
+IMPORTANTE
+
+Los archivos nunca deberán duplicarse.
+
+Los productos solo referenciarán la versión específica del Asset utilizada.
+
+==========================================================
+GALERÍA
+==========================================================
+
+Crear una galería profesional tipo DAM.
+
+Debe permitir:
+
+Vista Grid
+
+Vista Lista
+
+Buscar
+
+Ordenar
+
+Filtrar
+
+Seleccionar múltiples
+
+Favoritos
+
+Zoom
+
+Preview
+
+Mover
+
+Duplicar
+
+Eliminar
+
+Comparar imágenes
+
+Ver historial de versiones
+
+Restaurar versiones
+
+Marcar una versión como principal
+
+==========================================================
+COMPARADOR DE VERSIONES
+==========================================================
+
+Crear una vista para comparar dos o más versiones del mismo Asset.
+
+Debe mostrar:
+
+Imagen A
+
+Imagen B
+
+Imagen C
+
+Tipo de procesamiento
+
+Fecha
+
+Resolución
+
+Peso
+
+Versión
+
+Botón:
+
+Restaurar esta versión
+
+==========================================================
+TIMELINE
+==========================================================
+
+Cada Asset tendrá una línea del tiempo.
+
+Mostrar cronológicamente:
+
+Original
+
+↓
+
+Fondo eliminado
+
+↓
+
+Corrección de color
+
+↓
+
+Fondo blanco
+
+↓
+
+Marca de agua
+
+↓
+
+Mockup
+
+↓
+
+Try-On
+
+↓
+
+3D
+
+Cada elemento del Timeline podrá abrirse individualmente.
+
+==========================================================
+BARRA DE ACCIONES
+==========================================================
+
+Cuando existan Assets seleccionados mostrar una barra inferior.
+
+Debe contener:
+
+Cantidad seleccionada
+
+Agregar a Favoritos
+
+Descargar
+
+Regenerar
+
+Eliminar
+
+Mover
+
+Comparar
+
+Ver historial
+
+PUBLICAR AL CATÁLOGO
+
+==========================================================
+PRODUCT BRIDGE
+==========================================================
+
+Crear un módulo independiente.
+
+ProductBridgeModule
+
+Su responsabilidad será conectar AI Product Studio con el módulo Productos.
+
+Crear un servicio.
+
+ProductBridgeService
+
+Funciones:
+
+createPublication()
+
+openProductForm()
+
+injectAssets()
+
+linkAssets()
+
+El servicio deberá enviar las versiones seleccionadas, no únicamente los Assets.
+
+==========================================================
+PROCESAMIENTO
+==========================================================
+
+Todo el procesamiento deberá ejecutarse mediante Jobs en segundo plano.
+
+Cada versión mostrará:
+
+Pendiente
+
+Procesando
+
+Completado
+
+Error
+
+No bloquear nunca la interfaz.
+
+==========================================================
+COMPONENTES
+==========================================================
+
+Crear componentes reutilizables.
+
+<AIProjectList />
+
+<AIProjectCard />
+
+<AIUploader />
+
+<ProcessingStatus />
+
+<AssetGallery />
+
+<AssetCard />
+
+<AssetPreview />
+
+<AssetCompare />
+
+<AssetTimeline />
+
+<VersionHistory />
+
+<VersionCard />
+
+<AssetSelector />
+
+<PublishCatalogButton />
+
+<PublicationHistory />
+
+==========================================================
+ARQUITECTURA
+==========================================================
+
+Separar completamente los módulos.
+
+AIProductStudioModule
+
+AIProjectModule
+
+AIAssetModule
+
+AIAssetVersionModule
+
+ProcessingModule
+
+StorageModule
+
+PublicationModule
+
+ProductBridgeModule
+
+No mezclar lógica del catálogo con la lógica del estudio.
+
+Aplicar principios SOLID.
+
+Aplicar Clean Architecture.
+
+Utilizar componentes reutilizables.
+
+Todo el procesamiento debe ser desacoplado mediante servicios.
+
+==========================================================
+OBJETIVO FINAL
+==========================================================
+
+Quiero que AI Product Studio sea el centro creativo de toda la plataforma.
+
+Los Assets serán la única fuente de verdad para todas las imágenes.
+
+Cada modificación generará una nueva versión.
+
+Nunca se sobrescribirán archivos.
+
+Todo tendrá historial completo.
+
+Los productos únicamente referenciarán versiones específicas de los Assets publicados.
+
+Toda la arquitectura debe estar preparada para escalar a cientos de miles de Assets, millones de versiones y decenas de miles de productos.
+
+El diseño visual de AI Product Studio debe sentirse como una herramienta profesional de gestión creativa inspirada en Adobe Lightroom, Adobe Bridge, Figma, Notion y Shopify Admin, con una interfaz moderna, rápida, intuitiva y enfocada en productividad.
+
+
+==========================================================
+DOCUMENTACIÓN DE IMPLEMENTACIÓN (2026-07-30)
+==========================================================
+
+Estado: IMPLEMENTADO Y DESPLEGABLE EN LOCAL / VERCEL
+
+Migración aplicada:
+  prisma/migrations/20260730210000_ai_product_studio
+
+Typecheck: OK (tsc --noEmit)
+
+
+----------------------------------------------------------
+1. QUÉ SE ENTREGÓ
+----------------------------------------------------------
+
+Módulo independiente "AI Product Studio" (DAM creativo), separado del CRUD
+de productos. Administra proyectos, assets, versiones, jobs de procesamiento
+y publicaciones al catálogo. Los productos solo referencian versiones de
+assets (sin duplicar archivos).
+
+Ruta admin:
+  /dashboard/ai-studio
+  /dashboard/ai-studio/[id]
+
+Menú lateral: "AI Studio" (icono Sparkles), permiso aiStudio.view.
+
+
+----------------------------------------------------------
+2. BASE DE DATOS (Prisma / PostgreSQL)
+----------------------------------------------------------
+
+Tablas nuevas:
+
+  ai_projects
+  ai_assets
+  ai_asset_versions
+  ai_processing_jobs
+  catalog_publications
+  catalog_publication_assets
+  catalog_publish_sessions          ← sesión temporal Product Bridge
+  catalog_publish_session_items
+
+Alteración:
+
+  product_images.assetVersionId     ← FK opcional a ai_asset_versions
+                                      (url se mantiene denormalizada para render)
+
+Enums:
+
+  AIProjectStatus, AIAssetStatus, AIAssetType,
+  AIVersionJobStatus, CatalogPublicationStatus,
+  CatalogPublishSessionStatus
+
+Reglas de versionado:
+
+  • Nunca se sobrescribe un archivo/version.
+  • Cada procesamiento crea una nueva fila en ai_asset_versions.
+  • isOriginal = true no se puede eliminar.
+  • isCurrent + currentVersionId marcan la versión principal.
+
+
+----------------------------------------------------------
+3. ARQUITECTURA (Clean Architecture)
+----------------------------------------------------------
+
+src/modules/ai-studio/
+  domain/
+    entities.ts                     ← tipos, labels, pipeline default
+  application/
+    require-ai-studio.ts            ← auth + permisos
+    process-assets.usecase.ts       ← jobs de procesamiento
+    product-bridge.service.ts       ← ProductBridgeService
+  infrastructure/
+    ai-studio.repository.ts
+    storage.service.ts              ← Blob / local + checksum
+    processing.service.ts           ← transformaciones con sharp
+  presentation/
+    AIProjectList.tsx
+    ProjectWorkspace.tsx
+    types.ts
+    components/
+      AIProjectCard.tsx
+      AIUploader.tsx
+      AssetGallery.tsx
+      AssetCard.tsx
+      AssetPreview.tsx
+      AssetCompare.tsx
+      AssetTimeline.tsx
+      AssetSelector.tsx
+      VersionHistory.tsx
+      ProcessingStatus.tsx
+      PublishCatalogButton.tsx
+      PublicationHistory.tsx
+      AssetActionBar.tsx
+
+Permisos nuevos (permissions.ts):
+
+  aiStudio.view | create | edit | process | publish
+
+  Otorgados a ADMIN y USER (alineado con productos/galería).
+
+
+----------------------------------------------------------
+4. API ROUTES
+----------------------------------------------------------
+
+  GET/POST     /api/ai-studio/projects
+  GET/PUT/DEL  /api/ai-studio/projects/[id]
+  POST         /api/ai-studio/projects/[id]/assets
+  POST         /api/ai-studio/projects/[id]/process
+  POST         /api/ai-studio/projects/[id]/publish
+  GET/PATCH/DEL /api/ai-studio/assets/[id]
+  PATCH/DEL    /api/ai-studio/versions/[id]
+  GET          /api/ai-studio/publish-sessions/[id]
+
+Productos (ampliado):
+
+  POST /api/products acepta:
+    publishSessionId
+    images[].assetVersionId
+
+  Al guardar, ProductBridgeService.linkAssetsToProduct():
+    • Crea CatalogPublication + links
+    • Marca assets/proyecto como PUBLISHED
+    • Consume la sesión (CONSUMED)
+    • NO re-sube ni duplica archivos
+
+
+----------------------------------------------------------
+5. FLUJO DE USUARIO IMPLEMENTADO
+----------------------------------------------------------
+
+1. Dashboard → AI Studio → Nuevo proyecto
+2. Abrir proyecto → subir fotografías (AIUploader → /api/upload)
+3. Cada foto crea un AIAsset + Versión 1 ORIGINAL (READY)
+4. "Procesar todo" o barra de acciones → regenerar pipeline:
+     BACKGROUND_REMOVED, WHITE_BACKGROUND, BLACK_BACKGROUND,
+     PNG, WEBP, JPG, THUMBNAIL, MOCKUP
+   Cada resultado = nueva versión (nunca overwrite)
+5. Galería DAM: grid/lista, buscar, filtrar, ordenar, favoritos
+6. Timeline / Historial / Comparador por asset
+7. Seleccionar assets → PUBLICAR AL CATÁLOGO
+8. Se crea CatalogPublishSession (1h TTL)
+9. Redirect a /dashboard/productos?publishSession=...
+10. ProductManager precarga imágenes por referencia
+11. Usuario completa datos comerciales y Guarda
+12. ProductImage apunta a assetVersionId + CatalogPublication ACTIVE
+
+
+----------------------------------------------------------
+6. PROCESAMIENTO (estado actual — 100% GRATUITO)
+----------------------------------------------------------
+
+Modelado de producto SIN APIs de pago ni AI Gateway:
+
+  1. Recorte local ONNX (@imgly/background-removal-node)
+     elimina el fondo de la foto cruda (sin API key).
+
+  2. Se genera un cutout transparente + sombra de contacto.
+
+  3. Variantes locales (fondo claro/oscuro, PNG/WEBP/JPG, thumb, mockup)
+     + sello Capital Gang incrustado en cada variante.
+
+No requiere AI_GATEWAY_API_KEY ni créditos de Vercel.
+
+La primera ejecución descarga el modelo ONNX (~80 MB) desde IMG.LY
+(gratuito). Luego corre offline en el servidor Node.
+
+Jobs: ai_processing_jobs (PENDING → PROCESSING → COMPLETED/ERROR).
+Toasts nativos en dashboard para éxito / error.
+
+
+----------------------------------------------------------
+7. UI / UX (responsive + nativo al design system)
+----------------------------------------------------------
+
+Patrones reutilizados de la app:
+
+  panel, input-field, Button, skeleton, brand colors,
+  DashboardShell, lucide icons, ImageLightbox patterns
+
+Responsive:
+
+  • Sidebar drawer móvil existente
+  • Galería 2→3→4 columnas
+  • Barra de acciones inferior fija (safe en móvil)
+  • Tabs horizontales con scroll
+  • Preview fullscreen bottom-sheet en móvil / modal en desktop
+  • Uploader drag & drop + tap
+
+Sensación DAM (Lightroom / Bridge / Figma):
+
+  • Workspace por proyecto
+  • Selección múltiple + action bar
+  • Timeline de versiones
+  • Comparador lado a lado
+  • Historial con restaurar / duplicar / descargar / eliminar
+
+
+----------------------------------------------------------
+8. PRODUCT BRIDGE
+----------------------------------------------------------
+
+ProductBridgeService:
+
+  createPublicationSession()
+  openProductFormPath()
+  getSession()
+  injectAssets()
+  linkAssetsToProduct()
+
+ProductManager detecta ?publishSession= y muestra banner
+"Publicar desde AI Product Studio" con imágenes precargadas.
+
+
+----------------------------------------------------------
+9. CÓMO PROBAR
+----------------------------------------------------------
+
+1. pnpm dev (reiniciar si el servidor quedó caído tras prisma generate)
+2. Login admin → menú AI Studio
+3. Crear proyecto → subir 1–3 fotos
+4. Procesar todo → revisar timeline / comparar versiones
+5. Seleccionar assets READY → Publicar al catálogo
+6. Completar nombre/precio/stock → Guardar
+7. Verificar producto con imágenes y publication en el proyecto
+
+
+----------------------------------------------------------
+10. ARCHIVOS CLAVE TOCADOS / CREADOS
+----------------------------------------------------------
+
+Nuevos (principales):
+
+  prisma/migrations/20260730210000_ai_product_studio/migration.sql
+  src/modules/ai-studio/**/*
+  src/app/(admin)/dashboard/ai-studio/**/*
+  src/app/api/ai-studio/**/*
+
+Modificados:
+
+  prisma/schema.prisma
+  src/modules/identity/domain/permissions.ts
+  src/app/(admin)/dashboard/layout.tsx
+  src/modules/identity/presentation/DashboardNavLink.tsx
+  src/app/(admin)/dashboard/productos/ProductManager.tsx
+  src/app/(admin)/dashboard/productos/page.tsx
+  src/app/(admin)/dashboard/tattoo-shop/page.tsx
+  src/app/api/products/route.ts
+  src/app/api/products/[id]/route.ts
+
+
+----------------------------------------------------------
+11. NOTAS / LÍMITES CONOCIDOS
+----------------------------------------------------------
+
+• Upload sigue pasando por /api/upload (ADMIN hoy, igual que el resto del panel).
+• Try-On / 3D / matting real requieren proveedor externo (API keys); el
+  esquema y el versionado ya están listos para enchufarlos.
+• Procesamiento corre en la request (adecuado para MVP / pocas imágenes).
+  Para cientos de assets, migrar jobs a cola (Inngest / Vercel Workflow /
+  worker) reutilizando process-assets.usecase.ts.
+• La versión ORIGINAL nunca se elimina mientras exista el asset/proyecto.
+
+
+Fin de la documentación de implementación.
+==========================================================

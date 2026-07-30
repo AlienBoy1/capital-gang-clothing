@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { DashboardNavLink } from "@/modules/identity/presentation/DashboardNavLink";
 import { LogoutButton } from "@/modules/identity/presentation/LogoutButton";
 import { cn } from "@/shared/lib/cn";
+import { ToastHost } from "@/shared/ui/toast/ToastHost";
 
 interface NavItem {
   href: string;
@@ -139,6 +140,7 @@ export function DashboardShell({
         </main>
       </div>
       {drawer}
+      <ToastHost />
     </div>
   );
 }

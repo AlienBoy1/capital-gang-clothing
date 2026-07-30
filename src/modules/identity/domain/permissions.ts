@@ -15,6 +15,11 @@ export type Permission =
   | "gallery.manage"
   | "orders.view"
   | "orders.updateStatus"
+  | "aiStudio.view"
+  | "aiStudio.create"
+  | "aiStudio.edit"
+  | "aiStudio.process"
+  | "aiStudio.publish"
   | "users.create"
   | "users.editAny"
   | "users.editSelf"
@@ -34,6 +39,11 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "gallery.manage",
     "orders.view",
     "orders.updateStatus",
+    "aiStudio.view",
+    "aiStudio.create",
+    "aiStudio.edit",
+    "aiStudio.process",
+    "aiStudio.publish",
     "users.create",
     "users.editAny",
     "users.editSelf",
@@ -49,6 +59,11 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "tattooShop.manage",
     "gallery.manage",
     "orders.view",
+    "aiStudio.view",
+    "aiStudio.create",
+    "aiStudio.edit",
+    "aiStudio.process",
+    "aiStudio.publish",
     "users.editSelf",
     // Explicitly NOT granted to USER, per spec:
     // products.delete, users.create, users.editAny, users.delete,

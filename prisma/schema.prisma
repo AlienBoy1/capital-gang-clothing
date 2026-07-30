@@ -1,6 +1,6 @@
 // ============================================================================
 // CAPITAL GANG CLOTHING — Data Model
-// Bounded contexts: Identity | Catalog (Clothing) | TattooShop | Gallery | Orders
+// Bounded contexts: Identity | Catalog | TattooShop | Gallery | Orders | AI Product Studio
 // ============================================================================
 
 generator client {
@@ -54,6 +54,10 @@ model User {
   activityLogs   ActivityLog[]
   createdProducts Product[] @relation("ProductCreatedBy")
   handledOrders  OrderNote[]
+  aiProjects           AIProject[]            @relation("AIProjectCreatedBy")
+  aiAssetVersions      AIAssetVersion[]       @relation("AIAssetVersionCreatedBy")
+  catalogPublications  CatalogPublication[]   @relation("CatalogPublicationBy")
+  catalogPublishSessions CatalogPublishSession[] @relation("CatalogPublishSessionBy")
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -160,6 +164,7 @@ model Product {
   videos        ProductVideo[]
   variants      ProductVariant[]
   orderItems    OrderItem[]
+  publications  CatalogPublication[]
 
   createdById   String?
   createdBy     User?        @relation("ProductCreatedBy", fields: [createdById], references: [id])
@@ -173,14 +178,19 @@ model Product {
 }
 
 model ProductImage {
-  id        String  @id @default(cuid())
-  productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url       String
-  alt       String?
-  order     Int     @default(0)
-  isCover   Boolean @default(false)
+  id             String          @id @default(cuid())
+  productId      String
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  /// Denormalized URL for fast rendering (source of truth may be assetVersion)
+  url            String
+  alt            String?
+  order          Int             @default(0)
+  isCover        Boolean         @default(false)
+  /// Optional link to AI Studio asset version — files are never duplicated
+  assetVersionId String?
+  assetVersion   AIAssetVersion? @relation(fields: [assetVersionId], references: [id], onDelete: SetNull)
 
+  @@index([assetVersionId])
   @@map("product_images")
 }
 
@@ -319,4 +329,205 @@ model OrderNote {
   createdAt DateTime @default(now())
 
   @@map("order_notes")
+}
+
+// ------------------------------------------------------------------
+// AI PRODUCT STUDIO CONTEXT (DAM — independent from catalog CRUD)
+// ------------------------------------------------------------------
+
+enum AIProjectStatus {
+  DRAFT
+  PROCESSING
+  READY
+  PUBLISHED
+  ARCHIVED
+}
+
+enum AIAssetStatus {
+  DRAFT
+  PROCESSING
+  READY
+  PUBLISHED
+  ARCHIVED
+  ERROR
+}
+
+enum AIAssetType {
+  ORIGINAL
+  BACKGROUND_REMOVED
+  WHITE_BACKGROUND
+  BLACK_BACKGROUND
+  PNG
+  WEBP
+  JPG
+  MOCKUP
+  STREET
+  FLATLAY
+  TRYON_MAN
+  TRYON_WOMAN
+  DETAIL
+  THUMBNAIL
+  PREVIEW_3D
+  GLB
+}
+
+enum AIVersionJobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  ERROR
+}
+
+enum CatalogPublicationStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum CatalogPublishSessionStatus {
+  PENDING
+  CONSUMED
+  EXPIRED
+}
+
+model AIProject {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  status      AIProjectStatus @default(DRAFT)
+  createdById String
+  createdBy   User            @relation("AIProjectCreatedBy", fields: [createdById], references: [id])
+  assets      AIAsset[]
+  publications CatalogPublication[]
+  publishSessions CatalogPublishSession[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([status, createdAt])
+  @@map("ai_projects")
+}
+
+model AIAsset {
+  id               String        @id @default(cuid())
+  projectId        String
+  project          AIProject     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assetType        AIAssetType   @default(ORIGINAL)
+  status           AIAssetStatus @default(DRAFT)
+  favorite         Boolean       @default(false)
+  currentVersionId String?       @unique
+  currentVersion   AIAssetVersion? @relation("AIAssetCurrentVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
+  versions         AIAssetVersion[] @relation("AIAssetVersions")
+  jobs             AIProcessingJob[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([projectId, status])
+  @@index([projectId, favorite])
+  @@map("ai_assets")
+}
+
+model AIAssetVersion {
+  id              String             @id @default(cuid())
+  assetId         String
+  asset           AIAsset            @relation("AIAssetVersions", fields: [assetId], references: [id], onDelete: Cascade)
+  versionNumber   Int
+  parentVersionId String?
+  parentVersion   AIAssetVersion?    @relation("AIVersionTree", fields: [parentVersionId], references: [id], onDelete: SetNull)
+  childVersions   AIAssetVersion[]   @relation("AIVersionTree")
+  processingType  AIAssetType
+  storagePath     String
+  mime            String
+  width           Int?
+  height          Int?
+  size            Int?
+  checksum        String?
+  createdById     String?
+  createdBy       User?              @relation("AIAssetVersionCreatedBy", fields: [createdById], references: [id])
+  createdAt       DateTime           @default(now())
+  isCurrent       Boolean            @default(false)
+  isOriginal      Boolean            @default(false)
+  jobStatus       AIVersionJobStatus @default(COMPLETED)
+  notes           String?
+  currentForAsset AIAsset?           @relation("AIAssetCurrentVersion")
+  publicationLinks CatalogPublicationAsset[]
+  productImages   ProductImage[]
+  publishSessionItems CatalogPublishSessionItem[]
+
+  @@unique([assetId, versionNumber])
+  @@index([assetId, createdAt])
+  @@map("ai_asset_versions")
+}
+
+model AIProcessingJob {
+  id           String             @id @default(cuid())
+  assetId      String
+  asset        AIAsset            @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  sourceVersionId String
+  targetTypes  AIAssetType[]
+  status       AIVersionJobStatus @default(PENDING)
+  errorMessage String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  completedAt  DateTime?
+
+  @@index([assetId, status])
+  @@map("ai_processing_jobs")
+}
+
+model CatalogPublication {
+  id          String                   @id @default(cuid())
+  projectId   String
+  project     AIProject                @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product?                 @relation(fields: [productId], references: [id], onDelete: SetNull)
+  publishedAt DateTime                 @default(now())
+  publishedById String
+  publishedBy User                     @relation("CatalogPublicationBy", fields: [publishedById], references: [id])
+  status      CatalogPublicationStatus @default(DRAFT)
+  assets      CatalogPublicationAsset[]
+
+  @@index([projectId, publishedAt])
+  @@index([productId])
+  @@map("catalog_publications")
+}
+
+model CatalogPublicationAsset {
+  id             String             @id @default(cuid())
+  publicationId  String
+  publication    CatalogPublication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  assetVersionId String
+  assetVersion   AIAssetVersion     @relation(fields: [assetVersionId], references: [id], onDelete: Restrict)
+  order          Int                @default(0)
+
+  @@unique([publicationId, assetVersionId])
+  @@map("catalog_publication_assets")
+}
+
+/// Temporary bridge session: AI Studio → Product form (no product created yet)
+model CatalogPublishSession {
+  id          String                      @id @default(cuid())
+  projectId   String
+  project     AIProject                   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdById String
+  createdBy   User                        @relation("CatalogPublishSessionBy", fields: [createdById], references: [id])
+  status      CatalogPublishSessionStatus @default(PENDING)
+  storeType   StoreType                   @default(CLOTHING)
+  expiresAt   DateTime
+  createdAt   DateTime                    @default(now())
+  items       CatalogPublishSessionItem[]
+
+  @@index([createdById, status])
+  @@map("catalog_publish_sessions")
+}
+
+model CatalogPublishSessionItem {
+  id             String               @id @default(cuid())
+  sessionId      String
+  session        CatalogPublishSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  assetVersionId String
+  assetVersion   AIAssetVersion       @relation(fields: [assetVersionId], references: [id], onDelete: Cascade)
+  order          Int                  @default(0)
+
+  @@unique([sessionId, assetVersionId])
+  @@map("catalog_publish_session_items")
 }

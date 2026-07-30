@@ -9,6 +9,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const navItems = [
     { href: "/dashboard", label: "Resumen", icon: "LayoutDashboard", permission: null },
+    { href: "/dashboard/ai-studio", label: "AI Studio", icon: "Sparkles", permission: "aiStudio.view" as const },
     { href: "/dashboard/productos", label: "Ropa", icon: "Shirt", permission: "products.edit" as const },
     { href: "/dashboard/tattoo-shop", label: "Tattoo Shop", icon: "Syringe", permission: "tattooShop.manage" as const },
     { href: "/dashboard/galeria", label: "Galería", icon: "Images", permission: "gallery.manage" as const },

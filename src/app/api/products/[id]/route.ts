@@ -19,6 +19,7 @@ const productSchema = z.object({
         url: z.string().min(1),
         alt: z.string().optional().nullable(),
         isCover: z.boolean().optional(),
+        assetVersionId: z.string().optional().nullable(),
       })
     )
     .optional(),
@@ -68,6 +69,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
             alt: image.alt ?? null,
             order: index,
             isCover: image.isCover ?? index === 0,
+            assetVersionId: image.assetVersionId ?? null,
           })),
         });
       }

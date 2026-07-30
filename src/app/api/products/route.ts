@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { ProductBridgeService } from "@/modules/ai-studio/application/product-bridge.service";
 import { getCurrentSession } from "@/shared/lib/get-current-session";
 import { prisma } from "@/shared/lib/prisma";
 
@@ -13,12 +14,14 @@ const productSchema = z.object({
   stock: z.coerce.number().int().nonnegative().optional(),
   isActive: z.boolean().optional(),
   isFeatured: z.boolean().optional(),
+  publishSessionId: z.string().optional().nullable(),
   images: z
     .array(
       z.object({
         url: z.string().min(1),
         alt: z.string().optional().nullable(),
         isCover: z.boolean().optional(),
+        assetVersionId: z.string().optional().nullable(),
       })
     )
     .optional(),
@@ -51,7 +54,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Datos inválidos", issues: parsed.error.issues }, { status: 400 });
   }
 
-  const { images = [], ...data } = parsed.data;
+  const { images = [], publishSessionId, ...data } = parsed.data;
 
   const product = await prisma.product.create({
     data: {
@@ -68,12 +71,25 @@ export async function POST(request: Request) {
               alt: image.alt ?? null,
               order: index,
               isCover: image.isCover ?? index === 0,
+              assetVersionId: image.assetVersionId ?? null,
             })),
           }
         : undefined,
     },
     include: { images: true },
   });
+
+  if (publishSessionId) {
+    try {
+      await ProductBridgeService.linkAssetsToProduct({
+        sessionId: publishSessionId,
+        productId: product.id,
+        userId: session.userId,
+      });
+    } catch (error) {
+      console.error("publish session link failed", error);
+    }
+  }
 
   return NextResponse.json(product, { status: 201 });
 }
