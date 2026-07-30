@@ -25,6 +25,7 @@ interface OrderItem {
   address: string;
   city: string;
   municipality?: string;
+  postalCode?: string;
   state: string;
   comments?: string | null;
   status: string;
@@ -120,7 +121,13 @@ export function OrdersManager() {
                 {order.customerName} · {order.customerPhone}
               </p>
               <p className="mt-1 text-xs text-subtle">
-                {[order.address, order.municipality || order.city, order.state, order.country]
+                {[
+                  order.address,
+                  order.postalCode ? `CP ${order.postalCode}` : null,
+                  order.municipality || order.city,
+                  order.state,
+                  order.country,
+                ]
                   .filter(Boolean)
                   .join(", ")}
               </p>

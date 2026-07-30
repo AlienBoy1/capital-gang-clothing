@@ -21,6 +21,7 @@ const emptyForm = {
   country: "Mexico",
   state: "",
   municipality: "",
+  postalCode: "",
   address: "",
   note: "",
 };
@@ -44,8 +45,14 @@ export default function CarritoPage() {
       setError("Nombre y WhatsApp son obligatorios.");
       return;
     }
-    if (!form.country.trim() || !form.state.trim() || !form.municipality.trim() || !form.address.trim()) {
-      setError("Completa país, estado, municipio y calle y número.");
+    if (
+      !form.country.trim() ||
+      !form.state.trim() ||
+      !form.municipality.trim() ||
+      !form.postalCode.trim() ||
+      !form.address.trim()
+    ) {
+      setError("Completa país, estado, municipio, código postal y calle y número.");
       return;
     }
 
@@ -60,6 +67,7 @@ export default function CarritoPage() {
           country: form.country.trim(),
           state: form.state.trim(),
           municipality: form.municipality.trim(),
+          postalCode: form.postalCode.trim(),
           address: form.address.trim(),
           comments: form.note.trim() || null,
           items: items.map((item) => ({
@@ -90,6 +98,7 @@ export default function CarritoPage() {
         `País: ${form.country}`,
         `Estado: ${form.state}`,
         `Municipio: ${form.municipality}`,
+        `Código postal: ${form.postalCode}`,
         `Calle y número: ${form.address}`,
         form.note ? `Notas: ${form.note}` : null,
       ]
@@ -243,6 +252,14 @@ export default function CarritoPage() {
               required
             />
             <input
+              value={form.postalCode}
+              onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
+              placeholder="Código postal *"
+              className="input-field"
+              inputMode="numeric"
+              required
+            />
+            <input
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               placeholder="Calle y número *"
@@ -266,7 +283,7 @@ export default function CarritoPage() {
               Pedir por WhatsApp
             </Button>
             <p className="text-xs text-subtle">
-              Al enviar se crea la orden en el panel y se abre WhatsApp con el detalle.
+              No pagas nada aquí, al enviar se crea la orden y se abre WhatsApp con el detalle.
             </p>
           </aside>
         </div>

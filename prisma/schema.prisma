@@ -270,6 +270,7 @@ model Order {
   country       String       @default("Mexico")
   state         String
   municipality  String       @default("")
+  postalCode    String       @default("")
   address       String       // calle y número
   city          String       @default("") // legacy / alias; prefer municipality
   references    String?

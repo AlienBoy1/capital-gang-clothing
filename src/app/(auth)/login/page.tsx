@@ -72,9 +72,14 @@ export default function LoginPage() {
     <main className="relative min-h-screen overflow-hidden bg-canvas">
       {transitioning && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-canvas animate-fade-in">
-          <div className="relative mb-6 h-14 w-14">
-            <span className="absolute inset-0 animate-ping rounded-full bg-brand/30" />
-            <span className="absolute inset-2 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+          <div className="relative mb-6">
+            <span className="absolute -inset-4 animate-ping rounded-full bg-brand/20" />
+            <span className="absolute -inset-2 animate-pulse rounded-full bg-brand/10" />
+            <BrandMark
+              variant="seal"
+              size="lg"
+              className="relative drop-shadow-[0_0_24px_rgba(214,255,47,0.25)]"
+            />
           </div>
           <p className="font-brand text-lg font-bold uppercase tracking-[0.04em]">Entrando a Capital Gang</p>
           <p className="mt-2 text-sm text-muted">Preparando tu panel…</p>

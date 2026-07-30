@@ -19,3 +19,6 @@ public/uploads/*
 .DS_Store
 *.log
 .turbo
+
+.vercel
+.env*
