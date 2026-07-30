@@ -34,10 +34,12 @@ model User {
   role           Role      @default(USER)
 
   // Access-code validation flow (only relevant for USER on first login)
-  accessCode     String?   // hashed, one-time, cleared after validation
-  isValidated    Boolean   @default(false)
+  accessCode      String?   // hashed, used to verify first login
+  /// Plaintext code for admin panel until the user finishes first login + password setup
+  accessCodePlain String?
+  isValidated     Boolean   @default(false)
   /// After first login with access code, user must set their own password
-  mustSetPassword Boolean  @default(false)
+  mustSetPassword Boolean   @default(false)
 
   isActive       Boolean   @default(true)
   avatarUrl      String?

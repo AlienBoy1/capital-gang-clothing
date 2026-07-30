@@ -26,7 +26,13 @@ export class PrismaUserRepository implements UserRepository {
   async setPassword(userId: string, passwordHash: string) {
     await prisma.user.update({
       where: { id: userId },
-      data: { passwordHash, mustSetPassword: false },
+      data: {
+        passwordHash,
+        mustSetPassword: false,
+        // First login complete: remove admin-visible code
+        accessCodePlain: null,
+        accessCode: null,
+      },
     });
   }
 

@@ -3,11 +3,13 @@
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { LayoutDashboard, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandMark } from "@/components/BrandMark";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CartButton } from "@/modules/cart/presentation/CartButton";
+import { LogoutButton } from "@/modules/identity/presentation/LogoutButton";
+import { useAuthSession } from "@/modules/identity/presentation/useAuthSession";
 import { cn } from "@/shared/lib/cn";
 
 const links = [
@@ -22,6 +24,7 @@ export function SiteNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { ready, authenticated } = useAuthSession();
 
   useEffect(() => setMounted(true), []);
 
@@ -93,7 +96,7 @@ export function SiteNav() {
             })}
           </nav>
 
-          <div className="border-t border-line p-4 space-y-3">
+          <div className="space-y-3 border-t border-line p-4">
             <Link
               href="/carrito"
               onClick={() => setOpen(false)}
@@ -101,13 +104,27 @@ export function SiteNav() {
             >
               Ver carrito
             </Link>
-            <Link
-              href="/login"
-              onClick={() => setOpen(false)}
-              className="flex w-full items-center justify-center rounded-full bg-brand px-5 py-3 text-sm font-semibold text-brand-fg"
-            >
-              Iniciar sesión
-            </Link>
+            {ready && authenticated ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="flex w-full items-center justify-center gap-2 rounded-full border border-line px-5 py-3 text-sm font-semibold text-fg"
+                >
+                  <LayoutDashboard size={16} />
+                  Ir al panel
+                </Link>
+                <LogoutButton showLabel className="w-full rounded-full" />
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="flex w-full items-center justify-center rounded-full bg-brand px-5 py-3 text-sm font-semibold text-brand-fg"
+              >
+                Iniciar sesión
+              </Link>
+            )}
           </div>
         </div>
       </div>,
@@ -147,12 +164,24 @@ export function SiteNav() {
 
           <div className="flex items-center gap-2">
             <CartButton />
-            <Link
-              href="/login"
-              className="hidden rounded-lg px-3 py-2 text-sm text-muted transition hover:text-fg sm:inline-flex"
-            >
-              Acceso
-            </Link>
+            {ready && authenticated ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="hidden rounded-lg px-3 py-2 text-sm text-muted transition hover:text-fg sm:inline-flex"
+                >
+                  Panel
+                </Link>
+                <LogoutButton />
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden rounded-lg px-3 py-2 text-sm text-muted transition hover:text-fg sm:inline-flex"
+              >
+                Acceso
+              </Link>
+            )}
             <ThemeToggle />
             <button
               type="button"

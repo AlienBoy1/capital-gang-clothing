@@ -36,6 +36,9 @@ export async function GET() {
       phone: true,
       isValidated: true,
       mustSetPassword: true,
+      accessCodePlain: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 

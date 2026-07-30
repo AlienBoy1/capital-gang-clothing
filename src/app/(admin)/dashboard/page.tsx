@@ -8,7 +8,14 @@ export default async function DashboardHomePage() {
   const [productCount, orderCount, pendingOrders, albumCount] = await Promise.all([
     prisma.product.count({ where: { isActive: true } }).catch(() => 0),
     prisma.order.count().catch(() => 0),
-    prisma.order.count({ where: { status: { in: ["NEW", "PENDING"] } } }).catch(() => 0),
+    prisma.order
+      .count({
+        where: {
+          status: { in: ["NEW", "PENDING"] },
+          fulfillment: { not: "QUOTE" },
+        },
+      })
+      .catch(() => 0),
     prisma.galleryAlbum.count().catch(() => 0),
   ]);
 

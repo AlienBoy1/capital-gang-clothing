@@ -47,6 +47,7 @@ export class CreateUserUseCase {
         email: input.email,
         role: input.role,
         accessCode: accessCodeHash,
+        accessCodePlain: accessCode,
         passwordHash,
         isValidated: false,
         mustSetPassword: true,

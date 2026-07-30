@@ -25,9 +25,12 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [entered, setEntered] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setEntered(true));
+    const stored = window.localStorage.getItem("cgc-remember-me");
+    if (stored != null) setRememberMe(stored === "1");
     return () => cancelAnimationFrame(id);
   }, []);
 
@@ -43,10 +46,11 @@ export default function LoginPage() {
     setIsSubmitting(true);
     setServerError(null);
     try {
+      window.localStorage.setItem("cgc-remember-me", rememberMe ? "1" : "0");
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, rememberMe }),
       });
       const data = await res.json();
 
@@ -216,6 +220,21 @@ export default function LoginPage() {
                       </p>
                     )}
                   </div>
+
+                  <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-elevated/50 px-3 py-3 text-sm text-muted">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-[var(--brand)]"
+                    />
+                    <span>
+                      <span className="block font-medium text-fg">Recordarme</span>
+                      <span className="mt-0.5 block text-xs text-subtle">
+                        Mantén la sesión abierta en este dispositivo
+                      </span>
+                    </span>
+                  </label>
 
                   {serverError && <p className="text-xs text-danger">{serverError}</p>}
 

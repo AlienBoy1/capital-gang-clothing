@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { BrandMark } from "@/components/BrandMark";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DashboardNavLink } from "@/modules/identity/presentation/DashboardNavLink";
+import { LogoutButton } from "@/modules/identity/presentation/LogoutButton";
 import { cn } from "@/shared/lib/cn";
 
 interface NavItem {
@@ -72,6 +73,16 @@ export function DashboardShell({
             </button>
           </div>
           {nav}
+          <div className="mt-auto space-y-2 border-t border-line pt-4">
+            <Link
+              href="/"
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center justify-center rounded-full border border-line px-4 py-2.5 text-sm text-muted"
+            >
+              Ver sitio
+            </Link>
+            <LogoutButton showLabel className="w-full rounded-full" />
+          </div>
         </aside>
       </div>,
       document.body
@@ -80,11 +91,20 @@ export function DashboardShell({
   return (
     <div className="min-h-screen bg-canvas">
       <div className="flex min-h-screen flex-col lg:flex-row">
-        <aside className="hidden w-72 shrink-0 border-r border-line bg-surface/90 p-5 backdrop-blur-xl lg:block">
+        <aside className="hidden w-72 shrink-0 border-r border-line bg-surface/90 p-5 backdrop-blur-xl lg:flex lg:flex-col">
           <div className="mb-8">
             <BrandMark variant="horizontal" size="lg" />
           </div>
           {nav}
+          <div className="mt-auto space-y-2 border-t border-line pt-4">
+            <Link
+              href="/"
+              className="flex w-full items-center justify-center rounded-full border border-line px-4 py-2.5 text-sm text-muted transition hover:bg-elevated hover:text-fg"
+            >
+              Ver sitio
+            </Link>
+            <LogoutButton showLabel className="w-full rounded-full" />
+          </div>
         </aside>
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
@@ -107,10 +127,12 @@ export function DashboardShell({
               <Link
                 href="/"
                 className="rounded-full border border-line px-3 py-2 text-sm text-muted transition hover:bg-elevated hover:text-fg"
+                title="Navegar el sitio como visitante"
               >
                 Ver sitio
               </Link>
               <ThemeToggle />
+              <LogoutButton />
             </div>
           </header>
           {children}

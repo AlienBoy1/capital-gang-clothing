@@ -7,7 +7,11 @@ import {
   InactiveAccountError,
 } from "@/modules/identity/application/authenticate-user.usecase";
 import { PrismaUserRepository } from "@/modules/identity/infrastructure/user.repository";
-import { createSessionToken, SESSION_COOKIE_NAME } from "@/shared/lib/session";
+import {
+  buildSessionCookieOptions,
+  createSessionToken,
+  SESSION_COOKIE_NAME,
+} from "@/shared/lib/session";
 import { credentialsSchema, accessCodeSchema } from "@/modules/identity/presentation/login.schema";
 
 const useCase = new AuthenticateUserUseCase(new PrismaUserRepository());
@@ -23,6 +27,7 @@ export async function POST(request: Request) {
   const accessCode = body.accessCode
     ? accessCodeSchema.safeParse(body).data?.accessCode
     : undefined;
+  const rememberMe = Boolean(body.rememberMe);
 
   try {
     const user = await useCase.execute({
@@ -31,21 +36,19 @@ export async function POST(request: Request) {
       accessCode,
     });
 
-    const token = await createSessionToken({
-      userId: user.id,
-      role: user.role,
-      isValidated: user.isValidated,
-      mustSetPassword: user.mustSetPassword,
-    });
+    const token = await createSessionToken(
+      {
+        userId: user.id,
+        role: user.role,
+        isValidated: user.isValidated,
+        mustSetPassword: user.mustSetPassword,
+        rememberMe,
+      },
+      { rememberMe }
+    );
 
     const response = NextResponse.json({ user });
-    response.cookies.set(SESSION_COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-    });
+    response.cookies.set(SESSION_COOKIE_NAME, token, buildSessionCookieOptions(rememberMe));
     return response;
   } catch (error) {
     if (error instanceof AccessCodeRequiredError) {

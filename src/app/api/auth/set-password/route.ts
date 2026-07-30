@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 import { PrismaUserRepository } from "@/modules/identity/infrastructure/user.repository";
 import { setPasswordSchema } from "@/modules/identity/presentation/login.schema";
 import { getCurrentSession } from "@/shared/lib/get-current-session";
-import { createSessionToken, SESSION_COOKIE_NAME } from "@/shared/lib/session";
+import {
+  buildSessionCookieOptions,
+  createSessionToken,
+  SESSION_COOKIE_NAME,
+} from "@/shared/lib/session";
 import { prisma } from "@/shared/lib/prisma";
 
 const repo = new PrismaUserRepository();
@@ -27,20 +31,19 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.json({ message: "Usuario no encontrado" }, { status: 404 });
 
   const profile = repo.toPublicProfile(user);
-  const token = await createSessionToken({
-    userId: profile.id,
-    role: profile.role,
-    isValidated: profile.isValidated,
-    mustSetPassword: false,
-  });
+  const rememberMe = Boolean(session.rememberMe);
+  const token = await createSessionToken(
+    {
+      userId: profile.id,
+      role: profile.role,
+      isValidated: profile.isValidated,
+      mustSetPassword: false,
+      rememberMe,
+    },
+    { rememberMe }
+  );
 
   const response = NextResponse.json({ user: profile });
-  response.cookies.set(SESSION_COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
+  response.cookies.set(SESSION_COOKIE_NAME, token, buildSessionCookieOptions(rememberMe));
   return response;
 }
