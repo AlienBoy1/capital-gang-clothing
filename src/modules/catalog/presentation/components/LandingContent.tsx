@@ -40,7 +40,7 @@ export function LandingContent() {
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <p className="section-label">Lookbook</p>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="mt-3 font-brand text-3xl font-bold uppercase tracking-[0.02em] sm:text-4xl">
               Calle, textura, actitud
             </h2>
           </div>
@@ -94,7 +94,7 @@ export function LandingContent() {
           </FadeInSection>
           <FadeInSection delay={80} className="flex flex-col justify-center bg-surface px-6 py-16 sm:px-12 sm:py-24 lg:px-16">
             <p className="section-label">Filosofía</p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-fg sm:text-5xl">
+            <h2 className="mt-4 font-brand text-3xl font-bold uppercase tracking-[0.02em] text-fg sm:text-5xl">
               Nacido en la calle.
               <span className="mt-1 block text-muted">Creciendo como comunidad.</span>
             </h2>

@@ -76,7 +76,7 @@ export default function LoginPage() {
             <span className="absolute inset-0 animate-ping rounded-full bg-brand/30" />
             <span className="absolute inset-2 animate-spin rounded-full border-2 border-brand border-t-transparent" />
           </div>
-          <p className="font-display text-lg font-semibold tracking-tight">Entrando a Capital Gang</p>
+          <p className="font-brand text-lg font-bold uppercase tracking-[0.04em]">Entrando a Capital Gang</p>
           <p className="mt-2 text-sm text-muted">Preparando tu panel…</p>
         </div>
       )}
@@ -104,7 +104,7 @@ export default function LoginPage() {
             }`}
           >
             <p className="section-label">Capital Gang</p>
-            <h1 className="mt-4 max-w-md font-display text-4xl font-extrabold leading-[0.95] tracking-tight text-white xl:text-5xl">
+            <h1 className="mt-4 max-w-md font-brand text-4xl font-bold uppercase leading-[0.95] tracking-[0.02em] text-white xl:text-5xl">
               Calle.
               <span className="mt-1 block text-brand">Tinta. Actitud.</span>
             </h1>
@@ -150,12 +150,17 @@ export default function LoginPage() {
               entered ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
             }`}
           >
-            <div className="mb-8">
-              <BrandMark />
+            <div className="mb-10 flex flex-col items-center text-center">
+              <BrandMark
+                variant="seal"
+                size="xl"
+                className="mb-5 drop-shadow-[0_0_28px_rgba(214,255,47,0.28)]"
+              />
+              <BrandMark variant="horizontal" size="lg" align="center" />
             </div>
 
             <p className="section-label">Acceso</p>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="mt-3 font-brand text-3xl font-bold uppercase tracking-[0.02em] sm:text-4xl">
               {step === "credentials" ? "Inicia sesión" : "Valida tu cuenta"}
             </h2>
             <p className="mt-3 text-sm text-muted">

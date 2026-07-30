@@ -38,8 +38,10 @@ const config: Config = {
         },
       },
       fontFamily: {
+        brand: ["var(--font-brand)", "sans-serif"],
         display: ["var(--font-display)", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
+        tag: ["var(--font-tag)", "cursive"],
       },
       boxShadow: {
         soft: "0 18px 50px rgba(0,0,0,0.18)",

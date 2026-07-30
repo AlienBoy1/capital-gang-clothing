@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LANDING_IMAGES } from "@/modules/catalog/presentation/data/landing-images";
+import { BrandTag } from "@/components/brand/logos";
 import { Button } from "@/shared/ui/components/Button";
 
 export function Hero() {
@@ -17,7 +18,7 @@ export function Hero() {
         className="object-cover object-[center_30%] animate-scale-in"
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-canvas via-canvas/75 to-canvas/25 dark:from-canvas dark:via-canvas/80 dark:to-black/35"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-canvas via-canvas/80 to-black/30"
         aria-hidden
       />
       <div
@@ -26,18 +27,22 @@ export function Hero() {
       />
 
       <div className="page-shell relative z-10 pb-16 pt-32 sm:pb-24 sm:pt-40">
-        <p className="section-label mb-5 animate-fade-up opacity-0 [animation-fill-mode:forwards]">
-          Ropa urbana · Tattoo · Galería
+        <p className="section-label mb-4 animate-fade-up opacity-0 [animation-fill-mode:forwards]">
+          Clothing · Tattoo · Culture
         </p>
 
-        <h1 className="max-w-5xl animate-fade-up font-display text-[clamp(2.85rem,11vw,7rem)] font-extrabold leading-[0.9] tracking-tight text-fg opacity-0 [animation-delay:90ms] [animation-fill-mode:forwards]">
+        <h1 className="max-w-5xl animate-fade-up font-brand text-[clamp(2.75rem,12vw,7.2rem)] font-bold uppercase leading-[0.88] tracking-[0.02em] text-fg opacity-0 [animation-delay:90ms] [animation-fill-mode:forwards]">
           Capital Gang
-          <span className="mt-1 block text-brand">Clothing</span>
+          <span className="mt-2 block text-brand">Clothing</span>
         </h1>
 
         <p className="mt-6 max-w-lg animate-fade-up text-base leading-relaxed text-muted opacity-0 sm:text-lg [animation-delay:160ms] [animation-fill-mode:forwards]">
-          Una identidad. Dos mundos. Piezas que se viven en la calle y tinta que se lleva para siempre.
+          Unión entre la calle, la tinta y la comunidad. Nacido del asfalto.
         </p>
+
+        <div className="mt-6 animate-fade-up opacity-0 [animation-delay:180ms] [animation-fill-mode:forwards]">
+          <BrandTag />
+        </div>
 
         <div className="mt-10 flex animate-fade-up flex-col gap-3 opacity-0 sm:flex-row [animation-delay:230ms] [animation-fill-mode:forwards]">
           <Link href="/tienda">

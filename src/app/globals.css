@@ -3,67 +3,70 @@
 @tailwind utilities;
 
 :root {
-  --font-display: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-brand: "Stardos Stencil", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Stardos Stencil", ui-sans-serif, system-ui, sans-serif;
   --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-tag: "Permanent Marker", cursive;
 
-  --canvas: #0b0b0b;
-  --surface: #141414;
-  --elevated: #1c1c1c;
-  --fg: #f7f6f2;
-  --muted: rgba(247, 246, 242, 0.62);
-  --subtle: rgba(247, 246, 242, 0.4);
-  --line: rgba(255, 255, 255, 0.1);
-  --line-strong: rgba(255, 255, 255, 0.18);
-  --brand: #d4ff3f;
-  --brand-fg: #0b0b0b;
-  --brand-soft: rgba(212, 255, 63, 0.12);
+  /* Identidad Capital Gang */
+  --canvas: #0a0a0a;
+  --surface: #1a1a1a;
+  --elevated: #242424;
+  --fg: #ffffff;
+  --muted: rgba(255, 255, 255, 0.64);
+  --subtle: #7a7a7a;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.22);
+  --brand: #d6ff2f;
+  --brand-fg: #0a0a0a;
+  --brand-soft: rgba(214, 255, 47, 0.14);
   --danger: #b3323f;
-  --glow: rgba(212, 255, 63, 0.14);
-  --overlay: rgba(11, 11, 11, 0.72);
+  --glow: rgba(214, 255, 47, 0.16);
+  --overlay: rgba(10, 10, 10, 0.78);
   --skeleton-a: rgba(255, 255, 255, 0.04);
   --skeleton-b: rgba(255, 255, 255, 0.1);
-  --noise-opacity: 0.045;
+  --noise-opacity: 0.05;
 }
 
 html.dark {
   color-scheme: dark;
-  --canvas: #0b0b0b;
-  --surface: #141414;
-  --elevated: #1c1c1c;
-  --fg: #f7f6f2;
-  --muted: rgba(247, 246, 242, 0.62);
-  --subtle: rgba(247, 246, 242, 0.4);
-  --line: rgba(255, 255, 255, 0.1);
-  --line-strong: rgba(255, 255, 255, 0.18);
-  --brand: #d4ff3f;
-  --brand-fg: #0b0b0b;
-  --brand-soft: rgba(212, 255, 63, 0.12);
+  --canvas: #0a0a0a;
+  --surface: #1a1a1a;
+  --elevated: #242424;
+  --fg: #ffffff;
+  --muted: rgba(255, 255, 255, 0.64);
+  --subtle: #7a7a7a;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.22);
+  --brand: #d6ff2f;
+  --brand-fg: #0a0a0a;
+  --brand-soft: rgba(214, 255, 47, 0.14);
   --danger: #b3323f;
-  --glow: rgba(212, 255, 63, 0.14);
-  --overlay: rgba(11, 11, 11, 0.72);
+  --glow: rgba(214, 255, 47, 0.16);
+  --overlay: rgba(10, 10, 10, 0.78);
   --skeleton-a: rgba(255, 255, 255, 0.04);
   --skeleton-b: rgba(255, 255, 255, 0.1);
-  --noise-opacity: 0.045;
+  --noise-opacity: 0.05;
 }
 
 html.light {
   color-scheme: light;
-  --canvas: #f4f2ec;
+  --canvas: #f3f2ec;
   --surface: #ffffff;
   --elevated: #ebe8e0;
-  --fg: #121212;
-  --muted: rgba(18, 18, 18, 0.64);
-  --subtle: rgba(18, 18, 18, 0.42);
-  --line: rgba(18, 18, 18, 0.1);
-  --line-strong: rgba(18, 18, 18, 0.18);
+  --fg: #0a0a0a;
+  --muted: rgba(10, 10, 10, 0.64);
+  --subtle: #7a7a7a;
+  --line: rgba(10, 10, 10, 0.12);
+  --line-strong: rgba(10, 10, 10, 0.2);
   --brand: #6f8a12;
-  --brand-fg: #f7f6f2;
-  --brand-soft: rgba(111, 138, 18, 0.12);
+  --brand-fg: #ffffff;
+  --brand-soft: rgba(214, 255, 47, 0.22);
   --danger: #9b2432;
-  --glow: rgba(111, 138, 18, 0.1);
-  --overlay: rgba(244, 242, 236, 0.82);
-  --skeleton-a: rgba(18, 18, 18, 0.04);
-  --skeleton-b: rgba(18, 18, 18, 0.09);
+  --glow: rgba(214, 255, 47, 0.18);
+  --overlay: rgba(243, 242, 236, 0.86);
+  --skeleton-a: rgba(10, 10, 10, 0.04);
+  --skeleton-b: rgba(10, 10, 10, 0.09);
   --noise-opacity: 0.03;
 }
 
@@ -137,6 +140,10 @@ body::before {
       linear-gradient(135deg, transparent 60%, var(--brand-soft)),
       radial-gradient(circle at 100% 0%, var(--glow), transparent 40%);
     opacity: 0.55;
+  }
+
+  .headline-brand {
+    @apply font-brand font-bold uppercase tracking-[0.02em];
   }
 }
 

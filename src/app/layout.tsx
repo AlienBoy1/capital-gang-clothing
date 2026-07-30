@@ -1,30 +1,41 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Syne } from "next/font/google";
+import { DM_Sans, Permanent_Marker, Stardos_Stencil } from "next/font/google";
 import { QueryProvider } from "@/shared/config/QueryProvider";
 import "./globals.css";
 
-const syne = Syne({
+const brand = Stardos_Stencil({
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-brand",
   display: "swap",
-  weight: ["500", "600", "700", "800"],
+  weight: ["400", "700"],
 });
 
-const dmSans = DM_Sans({
+const body = DM_Sans({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
   weight: ["400", "500", "600", "700"],
 });
 
+const tag = Permanent_Marker({
+  subsets: ["latin"],
+  variable: "--font-tag",
+  display: "swap",
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "Capital Gang Clothing",
-    template: "%s · Capital Gang Clothing",
+    default: "Capital Gang",
+    template: "%s · Capital Gang",
   },
   description:
-    "Ropa urbana, tattoo shop y galería profesional de tatuajes — una sola identidad premium.",
+    "Clothing · Tattoo · Culture — unión entre la calle, la tinta y la comunidad.",
   manifest: "/manifest.json",
+  icons: {
+    icon: [{ url: "/brand/isotipo.png", type: "image/png" }],
+    apple: [{ url: "/brand/isotipo.png" }],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -34,8 +45,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0b0b0b" },
-    { media: "(prefers-color-scheme: light)", color: "#f4f2ec" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0A0A" },
+    { media: "(prefers-color-scheme: light)", color: "#F4F2EC" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -44,7 +55,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" suppressHydrationWarning className={`${syne.variable} ${dmSans.variable}`}>
+    <html
+      lang="es"
+      suppressHydrationWarning
+      className={`${brand.variable} ${body.variable} ${tag.variable}`}
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -57,7 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 root.classList.toggle("light", !dark);
                 root.style.colorScheme = dark ? "dark" : "light";
                 const meta = document.querySelector('meta[name="theme-color"]');
-                if (meta) meta.setAttribute("content", dark ? "#0b0b0b" : "#f4f2ec");
+                if (meta) meta.setAttribute("content", dark ? "#0A0A0A" : "#F4F2EC");
               } catch (error) {}
             `,
           }}

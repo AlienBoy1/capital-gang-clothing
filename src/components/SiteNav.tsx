@@ -41,7 +41,7 @@ export function SiteNav() {
     createPortal(
       <div
         className={cn(
-          "fixed inset-0 z-[80] md:hidden",
+          "fixed inset-0 z-[80] lg:hidden",
           open ? "pointer-events-auto" : "pointer-events-none"
         )}
         aria-hidden={!open}
@@ -63,7 +63,7 @@ export function SiteNav() {
           )}
         >
           <div className="flex h-16 items-center justify-between border-b border-line px-5">
-            <BrandMark compact />
+            <BrandMark variant="mark" size="lg" />
             <button
               type="button"
               className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-elevated text-fg"
@@ -117,9 +117,14 @@ export function SiteNav() {
   return (
     <>
       <header className="sticky top-0 z-[70] border-b border-line bg-canvas/95 backdrop-blur-xl">
-        <div className="page-shell flex h-16 items-center justify-between gap-3 sm:h-[4.25rem]">
+        <div className="page-shell flex h-[4.5rem] items-center justify-between gap-3 sm:h-20">
           <Link href="/" className="relative shrink-0" aria-label="Capital Gang inicio">
-            <BrandMark compact />
+            <span className="lg:hidden">
+              <BrandMark variant="mark" size="lg" />
+            </span>
+            <span className="hidden lg:block">
+              <BrandMark variant="horizontal" size="lg" />
+            </span>
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">

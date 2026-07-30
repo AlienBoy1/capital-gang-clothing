@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       { pathname: "/uploads/**" },
       { pathname: "/icons/**" },
       { pathname: "/landing/**" },
+      { pathname: "/brand/**" },
     ],
   },
   experimental: {

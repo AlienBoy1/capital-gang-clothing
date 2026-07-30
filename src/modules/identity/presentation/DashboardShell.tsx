@@ -61,7 +61,7 @@ export function DashboardShell({
           )}
         >
           <div className="mb-6 flex items-center justify-between gap-3">
-            <BrandMark compact />
+            <BrandMark variant="mark" size="lg" />
             <button
               type="button"
               className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-elevated"
@@ -80,9 +80,9 @@ export function DashboardShell({
   return (
     <div className="min-h-screen bg-canvas">
       <div className="flex min-h-screen flex-col lg:flex-row">
-        <aside className="hidden w-64 shrink-0 border-r border-line bg-surface/90 p-5 backdrop-blur-xl lg:block">
+        <aside className="hidden w-72 shrink-0 border-r border-line bg-surface/90 p-5 backdrop-blur-xl lg:block">
           <div className="mb-8">
-            <BrandMark />
+            <BrandMark variant="horizontal" size="lg" />
           </div>
           {nav}
         </aside>

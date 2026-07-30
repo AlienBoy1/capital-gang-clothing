@@ -10,7 +10,7 @@ function applyTheme(dark: boolean) {
   root.style.colorScheme = dark ? "dark" : "light";
   window.localStorage.setItem("cgc-theme", dark ? "dark" : "light");
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", dark ? "#0b0b0b" : "#f4f2ec");
+  if (meta) meta.setAttribute("content", dark ? "#0A0A0A" : "#F3F2EC");
 }
 
 export function ThemeToggle() {
